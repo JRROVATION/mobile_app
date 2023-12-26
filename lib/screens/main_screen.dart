@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_app/screens/home.dart';
-import 'package:mobile_app/screens/mms.dart';
-import 'package:mobile_app/screens/tma.dart';
 import 'package:mobile_app/widgets/app_bar.dart';
 
 class MainScreen extends StatefulWidget {
@@ -18,8 +16,6 @@ class _MainScreenState extends State<MainScreen> {
 
   final List<Widget> _pages = [
     const HomeScreen(),
-    const MmsScreen(),
-    const TmaScreen(),
   ];
 
   @override

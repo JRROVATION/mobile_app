@@ -67,6 +67,8 @@ flutter:
     - assets/images/red.png
     - assets/images/green.png
     - assets/images/yellow.png
+    - assets/images/bluetooth_pressed.png
+    - assets/images/bluetooth_button.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
