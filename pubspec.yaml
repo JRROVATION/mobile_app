@@ -40,6 +40,7 @@ dependencies:
   intl: ^0.18.1
   fl_chart: ^0.64.0
   google_maps_flutter: ^2.5.0
+  flutter_osm_plugin: ^0.60.5
 
 dev_dependencies:
   flutter_test:
