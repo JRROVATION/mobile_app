@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/screens/loading_screen.dart';
 // import 'package:google_fonts/google_fonts.dart';
-import 'package:mobile_app/screens/main_screen.dart';
-import 'package:mobile_app/screens/pairing_screen.dart';
+// import 'package:mobile_app/screens/main_screen.dart';
+// import 'package:mobile_app/screens/pairing_screen.dart';
 
 // final theme = ThemeData(
 //   useMaterial3: true,

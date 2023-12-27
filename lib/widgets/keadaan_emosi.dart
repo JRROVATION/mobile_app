@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
 
 class KeadaanEmosi extends StatefulWidget {
-  const KeadaanEmosi({super.key});
+  const KeadaanEmosi({Key? key}) : super(key: key);
   @override
   State<StatefulWidget> createState() {
     return _KeadaanEmosiState();
@@ -10,6 +12,32 @@ class KeadaanEmosi extends StatefulWidget {
 }
 
 class _KeadaanEmosiState extends State<KeadaanEmosi> {
+  String ekspresiVal = "";
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    try {
+      final response = await http.get(Uri.parse('http://iwms.site:9898/api'));
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+        final String emosi = data['message']['emosi'];
+        setState(() {
+          ekspresiVal = emosi;
+        });
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
   void _openMonitorGraphOverlay() {
     showModalBottomSheet(
       context: context,
@@ -29,7 +57,6 @@ class _KeadaanEmosiState extends State<KeadaanEmosi> {
                 fontWeight: FontWeight.w500,
               ),
             ),
-            // Image.asset('assets/images/line_chart.png'),
           ],
         );
       },
@@ -67,13 +94,32 @@ class _KeadaanEmosiState extends State<KeadaanEmosi> {
                   height: 10,
                   width: 135,
                 ),
-                Text(
-                  'Keadaan Emosi',
-                  style: GoogleFonts.poppins(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 0, 0, 8),
+                  child: Text(
+                    'Keadaan Emosi',
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                )
+                ),
+                Expanded(
+                  child: Container(
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Text(
+                        ekspresiVal,
+                        style: GoogleFonts.poppins(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black54,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ],

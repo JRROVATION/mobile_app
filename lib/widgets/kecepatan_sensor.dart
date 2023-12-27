@@ -1,8 +1,11 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
 
 class KecepatanSensor extends StatefulWidget {
-  const KecepatanSensor({super.key});
+  const KecepatanSensor({Key? key}) : super(key: key);
+
   @override
   State<KecepatanSensor> createState() {
     return _KecepatanSensorState();
@@ -10,6 +13,32 @@ class KecepatanSensor extends StatefulWidget {
 }
 
 class _KecepatanSensorState extends State<KecepatanSensor> {
+  String kecepatanValue = "";
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    try {
+      final response = await http.get(Uri.parse('http://iwms.site:9898/api'));
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+        final double kecepatan = data['message']['kecepatan'];
+        setState(() {
+          kecepatanValue = kecepatan.toStringAsFixed(1); // Menampilkan satu angka desimal
+        });
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
   void _openLiveMapOverlay() {
     showModalBottomSheet(
       context: context,
@@ -30,10 +59,8 @@ class _KecepatanSensorState extends State<KecepatanSensor> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // color: const Color.fromRGBO(232, 232, 232, 1),
       width: 362,
       height: 87,
-      // alignment: Alignment.center,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         color: const Color.fromRGBO(232, 232, 232, 1),
@@ -47,15 +74,12 @@ class _KecepatanSensorState extends State<KecepatanSensor> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(left:15.0),
+                  padding: const EdgeInsets.only(left: 15.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //   children: [
                       Padding(
-                        padding: const EdgeInsets.only(bottom:30.0),
+                        padding: const EdgeInsets.only(bottom: 30.0),
                         child: Text(
                           'Kecepatan',
                           style: GoogleFonts.poppins(
@@ -67,14 +91,15 @@ class _KecepatanSensorState extends State<KecepatanSensor> {
                       Row(
                         children: [
                           Text(
-                            '60.3',
+                            kecepatanValue,
                             style: GoogleFonts.ibmPlexSans(
                               fontSize: 40,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.fromLTRB(8.0, 0.0, 15.0, 20.0),
+                            padding:
+                                const EdgeInsets.fromLTRB(8.0, 0.0, 15.0, 20.0),
                             child: Text(
                               'km/j',
                               style: GoogleFonts.poppins(

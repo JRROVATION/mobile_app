@@ -42,7 +42,7 @@ class _DurasiNotfState extends State<DurasiNotf> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Durasi Aman',
+              'Hujan',
               style: GoogleFonts.poppins(
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
