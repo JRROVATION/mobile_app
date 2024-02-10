@@ -27,13 +27,25 @@ class _BluetoothPairingState extends State<BluetoothPairing> {
   BluetoothState bluetoothState = BluetoothState.UNKNOWN;
   BluetoothDevice? bluetoothDevice = null;
   StreamSubscription<BluetoothDiscoveryResult>? discoveryStreamSubscription;
+  BluetoothConnection? bluetoothConnection = null;
 
   void toggleBluetooth() async {
     // setState(() {
     // isBluetoothOn = !isBluetoothOn;
     if (isBluetoothOn && isBonded) {
       isPairing = true;
-      await pairBT();
+      final _isPaired = await pairBT();
+
+      if (_isPaired) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => MainScreen(
+              bluetoothConnection: bluetoothConnection,
+            ),
+          ),
+        );
+      }
+
       // Future.delayed(const Duration(seconds: 3), () {
       //   setState(() {
       //     isPairing = false;
@@ -160,15 +172,24 @@ class _BluetoothPairingState extends State<BluetoothPairing> {
   Future<bool> pairBT() async {
     if (bluetoothDevice == null) return false;
 
-    final BluetoothConnection conn =
-        await BluetoothConnection.toAddress(bluetoothDevice!.address);
+    try {
+      final BluetoothConnection conn =
+          await BluetoothConnection.toAddress(bluetoothDevice!.address);
+      setState(() {
+        bluetoothConnection = conn;
+      });
+      return true;
+    } catch (e) {
+      print("Pairing failed : $e");
+      return false;
+    }
 
-    conn.input!.listen((event) {
-      String s = String.fromCharCodes(event);
-      print("received from ${bluetoothDevice!.name} : $s");
-    });
+    // conn.input!.listen((event) {
+    //   String s = String.fromCharCodes(event);
+    //   print("received from ${bluetoothDevice!.name} : $s");
 
-    return true;
+    //   conn.output.add(event);
+    // });
   }
 
   // void _onDataReceived(Uint8List data) {
