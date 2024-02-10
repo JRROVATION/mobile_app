@@ -74,19 +74,22 @@ class _HomeScreenState extends State<HomeScreen> {
                     SizedBox(
                       width: 15,
                     ),
-                    Column(
-                      children: [
-                        KantukNotf(),
-                        SizedBox(
-                          height: 7,
-                        ),
-                        DurasiNotf(),
-                        SizedBox(
-                          height: 7,
-                        ),
-                        KecepatanNotf(),
-                      ],
-                    )
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          KantukNotf(),
+                          SizedBox(
+                            height: 7,
+                          ),
+                          DurasiNotf(),
+                          SizedBox(
+                            height: 7,
+                          ),
+                          KecepatanNotf(),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(

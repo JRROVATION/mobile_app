@@ -31,7 +31,7 @@ class _KecepatanNotfState extends State<KecepatanNotf> {
   Widget build(BuildContext context) {
     return Container(
       // color: const Color.fromRGBO(232, 232, 232, 1),
-      width: 173,
+      // width: 173,
       height: 51,
       // alignment: Alignment.center,
       decoration: BoxDecoration(

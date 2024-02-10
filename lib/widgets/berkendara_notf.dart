@@ -30,7 +30,7 @@ class _DurasiNotfState extends State<DurasiNotf> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 173,
+      // width: 173,
       height: 51,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
