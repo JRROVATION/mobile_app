@@ -1,8 +1,13 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'dart:convert' as convert;
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mobile_app/model/condition.dart';
 import 'package:mobile_app/screens/home.dart';
 import 'package:mobile_app/widgets/app_bar.dart';
+import 'package:mobile_app/model/sensor.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({
@@ -21,9 +26,23 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
 
-  final List<Widget> _pages = [
-    const HomeScreen(),
-  ];
+  final SensorData sensorData = SensorData();
+  final ConditionData conditionData = ConditionData();
+
+  Pages() {
+    switch (_currentIndex) {
+      case 0:
+        return HomeScreen(
+          sensorData: sensorData,
+          conditionData: conditionData,
+        );
+      default:
+        return HomeScreen(
+          sensorData: sensorData,
+          conditionData: conditionData,
+        );
+    }
+  }
 
   @override
   void initState() {
@@ -38,15 +57,50 @@ class _MainScreenState extends State<MainScreen> {
   void _onReceivedBT(payload) {
     String message = String.fromCharCodes(payload);
     print("received from bt : $message");
+    final data = convert.jsonDecode(message);
+
+    print("received from bt ID : ${data["id"]}");
+
+    switch (data["id"]) {
+      case "get-sensor":
+        if (data["speed"] != null) {
+          print(data["speed"]);
+          setState(() {
+            sensorData.speed = data["speed"] + 0.0;
+          });
+        }
+
+        if (data["location"] != null) {
+          print(data["location"]);
+          setState(() {
+            sensorData.location = Location(
+              latitude: data["location"]["latitude"] + 0.0,
+              longitude: data["location"]["longitude"] + 0.0,
+            );
+          });
+        }
+        break;
+      default:
+        print("unhandled msg ID");
+        break;
+    }
   }
 
   void _sendBT(payload) {
     widget.bluetoothConnection!.output.add(payload);
-    widget.bluetoothConnection!.output.allSent
-        .then((value) => print("send to bt success"));
+    widget.bluetoothConnection!.output.allSent.then((value) {
+      print("send to bt success");
+      Future.delayed(Duration(seconds: 3), () {
+        final ll = 'hello\r\n'.codeUnits;
+        _sendBT(Uint8List.fromList(ll));
+      });
+    });
   }
 
   void listenBT() async {
+    final ll = 'hello\r\n'.codeUnits;
+    _sendBT(Uint8List.fromList(ll));
+
     widget.bluetoothConnection!.input!.listen((event) {
       _onReceivedBT(event);
     });
@@ -56,7 +110,7 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(currentIndex: _currentIndex),
-      body: _pages[_currentIndex],
+      body: Pages(),
       // bottomNavigationBar: const SizedBox(
       //   height: 83,
       // child: BottomNavigationBar(

@@ -35,7 +35,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'LOGO',
+              'ADVISE',
               style: GoogleFonts.poppins(
                 fontSize: 45,
                 fontWeight: FontWeight.w500,

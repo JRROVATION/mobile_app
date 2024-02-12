@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mobile_app/model/condition.dart';
 
 class KantukNotf extends StatefulWidget {
-  const KantukNotf({super.key});
+  KantukNotf({
+    super.key,
+    required this.conditionData,
+  });
+
+  ConditionData conditionData;
   @override
   State<KantukNotf> createState() {
     return _KantukNotfState();
@@ -27,7 +33,9 @@ class _KantukNotfState extends State<KantukNotf> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Kantuk Terdeteksi',
+              widget.conditionData.drowsy
+                  ? 'Kantuk Terdeteksi'
+                  : 'Tidak Kantuk',
               style: GoogleFonts.poppins(
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
@@ -35,7 +43,9 @@ class _KantukNotfState extends State<KantukNotf> {
               ),
             ),
             Image.asset(
-              'assets/images/red.png',
+              widget.conditionData.drowsy
+                  ? 'assets/images/red.png'
+                  : 'assets/images/green.png',
               height: 13,
               width: 13,
             ),

@@ -15,7 +15,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Text(
-          "LOGO",
+          "ADVISE",
           style: GoogleFonts.raleway(
             color: Colors.black,
             fontSize: 25,

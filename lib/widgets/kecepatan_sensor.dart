@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mobile_app/model/sensor.dart';
 
 class KecepatanSensor extends StatefulWidget {
-  const KecepatanSensor({super.key});
+  KecepatanSensor({
+    super.key,
+    required this.sensorData,
+  });
+
+  SensorData sensorData;
+
   @override
   State<KecepatanSensor> createState() {
     return _KecepatanSensorState();
@@ -20,8 +27,8 @@ class _KecepatanSensorState extends State<KecepatanSensor> {
         ),
       ),
       builder: (ctx) {
-        return const Column(
-          children: [],
+        return Container(
+          width: double.infinity,
         );
       },
     );
@@ -40,57 +47,57 @@ class _KecepatanSensorState extends State<KecepatanSensor> {
       ),
       child: IconButton(
         onPressed: _openLiveMapOverlay,
-        icon: Stack(
-          children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left:15.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //   children: [
-                      Padding(
-                        padding: const EdgeInsets.only(bottom:30.0),
-                        child: Text(
-                          'Kecepatan',
-                          style: GoogleFonts.poppins(
-                            fontSize: 15,
+        icon: Container(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 15.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    Container(
+                      // padding: const EdgeInsets.only(bottom: 30.0),
+                      child: Text(
+                        'Kecepatan',
+                        style: GoogleFonts.poppins(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          '${widget.sensorData.speed}',
+                          style: GoogleFonts.ibmPlexSans(
+                            fontSize: 40,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            '60.3',
-                            style: GoogleFonts.ibmPlexSans(
-                              fontSize: 40,
+                        Container(
+                          padding:
+                              const EdgeInsets.fromLTRB(8.0, 0.0, 15.0, 20.0),
+                          child: Text(
+                            'km/j',
+                            style: GoogleFonts.poppins(
+                              fontSize: 10,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(8.0, 0.0, 15.0, 20.0),
-                            child: Text(
-                              'km/j',
-                              style: GoogleFonts.poppins(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

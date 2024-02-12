@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:mobile_app/model/condition.dart';
+import 'package:mobile_app/model/sensor.dart';
 import 'package:mobile_app/widgets/keadaan_emosi.dart';
 import 'package:mobile_app/widgets/berkendara_notf.dart';
 import 'package:mobile_app/widgets/kantuk_notf.dart';
@@ -9,10 +11,16 @@ import 'package:mobile_app/widgets/maps.dart';
 import 'package:mobile_app/widgets/kecepatan_notf.dart';
 import 'package:mobile_app/widgets/rincian_sensor.dart';
 
-final formatter = DateFormat.yMMMMEEEEd();
-
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  HomeScreen({
+    super.key,
+    required this.sensorData,
+    required this.conditionData,
+  });
+
+  SensorData sensorData;
+  ConditionData conditionData;
+
   @override
   State<StatefulWidget> createState() {
     return _HomeScreenState();
@@ -20,11 +28,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final now = DateTime.now();
-
   @override
   Widget build(BuildContext context) {
-    final date = formatter.format(now);
+    final date = DateFormat("EEEE, d MMMM yyyy", "id_ID")
+        .format(DateTime.now())
+        .toString();
     return MaterialApp(
       home: Scaffold(
         backgroundColor: Color.fromARGB(255, 255, 255, 255),
@@ -48,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       Text(
-                        'Senin, 25 Desember 2023',
+                        '$date',
                         style: GoogleFonts.poppins(
                           fontSize: 15,
                           color: Colors.black54,
@@ -63,30 +71,38 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(
                   height: 30,
                 ),
-                const MapsLocation(),
+                MapsLocation(sensorData: widget.sensorData),
                 const SizedBox(
                   height: 17,
                 ),
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    KeadaanEmosi(),
+                    KeadaanEmosi(
+                      conditionData: widget.conditionData,
+                    ),
                     SizedBox(
                       width: 15,
                     ),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          KantukNotf(),
+                          KantukNotf(
+                            conditionData: widget.conditionData,
+                          ),
                           SizedBox(
                             height: 7,
                           ),
-                          DurasiNotf(),
+                          // DurasiNotf(),
                           SizedBox(
                             height: 7,
                           ),
-                          KecepatanNotf(),
+                          KecepatanNotf(
+                            sensorData: widget.sensorData,
+                          ),
                         ],
                       ),
                     ),
@@ -95,11 +111,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(
                   height: 15,
                 ),
-                const KecepatanSensor(),
+                KecepatanSensor(
+                  sensorData: widget.sensorData,
+                ),
                 const SizedBox(
                   height: 17,
                 ),
-                const RincianSensor(),
+                // const RincianSensor(),
                 const SizedBox(
                   height: 25,
                 ),

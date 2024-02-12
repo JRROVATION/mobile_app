@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mobile_app/model/sensor.dart';
 
 class KecepatanNotf extends StatefulWidget {
-  const KecepatanNotf({super.key});
+  KecepatanNotf({
+    super.key,
+    required this.sensorData,
+  });
+
+  SensorData sensorData;
   @override
   State<KecepatanNotf> createState() {
     return _KecepatanNotfState();
@@ -27,6 +33,19 @@ class _KecepatanNotfState extends State<KecepatanNotf> {
     );
   }
 
+  StatusKecepatanString() {
+    String speedString = "";
+    double speed = widget.sensorData.speed;
+    if (speed > 70)
+      speedString = "Tinggi";
+    else if (speed > 50)
+      speedString = "Normal";
+    else
+      speedString = "Rendah";
+
+    return "Kecepatan $speedString";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -44,7 +63,7 @@ class _KecepatanNotfState extends State<KecepatanNotf> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Kecepatan Normal',
+              StatusKecepatanString(),
               style: GoogleFonts.poppins(
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
@@ -52,7 +71,11 @@ class _KecepatanNotfState extends State<KecepatanNotf> {
               ),
             ),
             Image.asset(
-              'assets/images/yellow.png',
+              widget.sensorData.speed > 70
+                  ? 'assets/images/red.png'
+                  : widget.sensorData.speed > 50
+                      ? 'assets/images/yellow.png'
+                      : 'assets/images/green.png',
               height: 13,
               width: 13,
             ),

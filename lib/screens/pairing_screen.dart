@@ -24,16 +24,52 @@ class _BluetoothPairingState extends State<BluetoothPairing> {
 
   bool isBonded = false;
 
+  bool isBTInit = false;
+
+  bool isBTButtonToggled = false;
+
+  String? progressMsg = null;
+
   BluetoothState bluetoothState = BluetoothState.UNKNOWN;
   BluetoothDevice? bluetoothDevice = null;
   StreamSubscription<BluetoothDiscoveryResult>? discoveryStreamSubscription;
   BluetoothConnection? bluetoothConnection = null;
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   void toggleBluetooth() async {
-    // setState(() {
-    // isBluetoothOn = !isBluetoothOn;
+    if (isBTButtonToggled) return; //still pressed, cancel
+
+    setState(() {
+      isBTButtonToggled = true;
+    });
+
+    setProgressMessage("Initializing bluetooth");
+
+    await Future.delayed(const Duration(seconds: 1));
+
+    if (!isBTInit) {
+      final initstate = await initBT();
+      if (!initstate) {
+        print("Init bt failed");
+        setProgressMessage("Bluetooth initialization failed");
+      } else {
+        setState(() {
+          isBTInit = true;
+        });
+      }
+    }
+
     if (isBluetoothOn && isBonded) {
-      isPairing = true;
+      setState(() {
+        isPairing = true;
+      });
+
+      setProgressMessage("Pairing");
+
       final _isPaired = await pairBT();
 
       if (_isPaired) {
@@ -45,43 +81,30 @@ class _BluetoothPairingState extends State<BluetoothPairing> {
           ),
         );
       }
-
-      // Future.delayed(const Duration(seconds: 3), () {
-      //   setState(() {
-      //     isPairing = false;
-      //     isPaired = true; // Setelah proses pairing selesai
-      //   });
-      //   if (isPaired) {
-      //     Future.delayed(const Duration(seconds: 1), () {
-      //       // Navigasi ke MainScreen setelah proses pairing selesai
-      //       Navigator.of(context).pushReplacement(
-      //         MaterialPageRoute(
-      //           builder: (context) => MainScreen(),
-      //         ),
-      //       );
-      //     });
-      //   }
-      // });
     }
-    // });
-  }
 
-  @override
-  void initState() {
-    super.initState();
-
-    initBT();
-  }
-
-  void initBT() async {
-    FlutterBluetoothSerial.instance.state.then((state) {
-      print("Bluetooth state : $state");
-
-      setState(() {
-        bluetoothState = state;
-        if (state == BluetoothState.STATE_ON) isBluetoothOn = true;
-      });
+    setState(() {
+      isBTButtonToggled = false;
     });
+  }
+
+  setProgressMessage(String? msg) {
+    setState(() {
+      progressMsg = msg;
+    });
+  }
+
+  Future<bool> initBT() async {
+    final btstate = await FlutterBluetoothSerial.instance.state;
+
+    print("Bluetooth state : $btstate");
+
+    setState(() {
+      bluetoothState = btstate;
+      if (btstate == BluetoothState.STATE_ON) isBluetoothOn = true;
+    });
+
+    if (!isBluetoothOn) return false;
 
     if (await Permission.bluetooth.isDenied) {
       await Permission.bluetooth.request();
@@ -117,6 +140,8 @@ class _BluetoothPairingState extends State<BluetoothPairing> {
     if (isBonded) {
       print("ready to pel");
     }
+
+    return true;
   }
 
   Future<bool> findBTDevice() async {
@@ -159,7 +184,11 @@ class _BluetoothPairingState extends State<BluetoothPairing> {
         print(e);
         if (e.message == "device already bonded") {
           print("device already bonded");
+          setProgressMessage("Device already bonded");
           // is ok, continue
+          setState(() {
+            isBonded = true;
+          });
         } else {
           print(e.message); //other error
         }
@@ -175,34 +204,20 @@ class _BluetoothPairingState extends State<BluetoothPairing> {
     try {
       final BluetoothConnection conn =
           await BluetoothConnection.toAddress(bluetoothDevice!.address);
+
       setState(() {
         bluetoothConnection = conn;
       });
       return true;
     } catch (e) {
       print("Pairing failed : $e");
+      setProgressMessage("Pairing failed");
+      setState(() {
+        isPairing = false;
+      });
       return false;
     }
-
-    // conn.input!.listen((event) {
-    //   String s = String.fromCharCodes(event);
-    //   print("received from ${bluetoothDevice!.name} : $s");
-
-    //   conn.output.add(event);
-    // });
   }
-
-  // void _onDataReceived(Uint8List data) {
-  //   data.forEach((d) {
-  //     print("received : ");
-  //     print(d);
-  //   });
-  //   String s = new String.fromCharCodes(data);
-  //   print(s);
-  //   setState(() {
-  //     _message = s;
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -221,45 +236,54 @@ class _BluetoothPairingState extends State<BluetoothPairing> {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
+                Text("Click to turn bluetooth mode ON"),
+                isBonded
+                    ? Text("is bonded $btDeviceID")
+                    : Text("no bond $btDeviceID"),
                 const SizedBox(height: 20),
                 GestureDetector(
                   onTap: () {
                     toggleBluetooth();
                   },
                   child: Image.asset(
-                    !isBluetoothOn
+                    isBTButtonToggled
                         ? 'assets/images/bluetooth_pressed.png'
                         : 'assets/images/bluetooth_button.png',
                     height: 257,
                     width: 257,
                   ),
                 ),
-                if (isPairing)
-                  Column(
-                    children: [
-                      const SizedBox(height: 10),
-                      Text(
-                        'Pairing...',
-                        style: GoogleFonts.poppins(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
-                        ),
+                progressMsg != null
+                    ? Text("$progressMsg")
+                    : SizedBox(
+                        height: 10,
                       ),
-                    ],
-                  ),
-                if (!isPairing && isPaired)
-                  Column(
-                    children: [
-                      const SizedBox(height: 10),
-                      Text(
-                        'Paired',
-                        style: GoogleFonts.poppins(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
+                // if (isPairing)
+                //   Column(
+                //     children: [
+                //       const SizedBox(height: 10),
+                //       Text(
+                //         'Pairing to ${bluetoothDevice!.name}...',
+                //         style: GoogleFonts.poppins(
+                //           fontSize: 15,
+                //           fontWeight: FontWeight.w500,
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // if (!isPairing && isPaired)
+                //   Column(
+                //     children: [
+                //       const SizedBox(height: 10),
+                //       Text(
+                //         'Paired',
+                //         style: GoogleFonts.poppins(
+                //           fontSize: 15,
+                //           fontWeight: FontWeight.w500,
+                //         ),
+                //       ),
+                // ],
+                // ),
               ],
             ),
           ),
