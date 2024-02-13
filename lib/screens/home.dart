@@ -16,10 +16,12 @@ class HomeScreen extends StatefulWidget {
     super.key,
     required this.sensorData,
     required this.conditionData,
+    required this.locationUpdatedNotif,
   });
 
   SensorData sensorData;
   ConditionData conditionData;
+  ValueNotifier locationUpdatedNotif;
 
   @override
   State<StatefulWidget> createState() {
@@ -71,7 +73,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(
                   height: 30,
                 ),
-                MapsLocation(sensorData: widget.sensorData),
+                MapsLocation(
+                  sensorData: widget.sensorData,
+                  locationUpdatedNotif: widget.locationUpdatedNotif,
+                ),
                 const SizedBox(
                   height: 17,
                 ),

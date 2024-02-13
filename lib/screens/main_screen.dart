@@ -29,17 +29,21 @@ class _MainScreenState extends State<MainScreen> {
   final SensorData sensorData = SensorData();
   final ConditionData conditionData = ConditionData();
 
+  ValueNotifier locationUpdatedNotif = ValueNotifier(false);
+
   Pages() {
     switch (_currentIndex) {
       case 0:
         return HomeScreen(
           sensorData: sensorData,
           conditionData: conditionData,
+          locationUpdatedNotif: locationUpdatedNotif,
         );
       default:
         return HomeScreen(
           sensorData: sensorData,
           conditionData: conditionData,
+          locationUpdatedNotif: locationUpdatedNotif,
         );
     }
   }
@@ -64,9 +68,23 @@ class _MainScreenState extends State<MainScreen> {
     switch (data["id"]) {
       case "get-sensor":
         if (data["speed"] != null) {
-          print(data["speed"]);
+          print("speed : ${data["speed"]}");
           setState(() {
             sensorData.speed = data["speed"] + 0.0;
+          });
+        }
+
+        if (data["drowsiness"] != null) {
+          print("drowsiness : ${data["drowsiness"]}");
+          setState(() {
+            conditionData.drowsy = data["drowsiness"];
+          });
+        }
+
+        if (data["expression"] != null) {
+          print("expression : ${data["expression"]}");
+          setState(() {
+            conditionData.expression = Expression.values[data["expression"]];
           });
         }
 
@@ -78,8 +96,11 @@ class _MainScreenState extends State<MainScreen> {
               longitude: data["location"]["longitude"] + 0.0,
             );
           });
+
+          locationUpdatedNotif.value = !locationUpdatedNotif.value;
         }
         break;
+
       default:
         print("unhandled msg ID");
         break;

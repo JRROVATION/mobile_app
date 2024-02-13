@@ -9,9 +9,11 @@ class MapsLocation extends StatefulWidget {
   MapsLocation({
     super.key,
     required this.sensorData,
+    required this.locationUpdatedNotif,
   });
 
   SensorData sensorData;
+  ValueNotifier locationUpdatedNotif;
 
   @override
   State<StatefulWidget> createState() {
@@ -21,25 +23,56 @@ class MapsLocation extends StatefulWidget {
 
 class _MapsLocationState extends State<MapsLocation> {
   late MapController controller;
+  GeoPoint markerPos = GeoPoint(latitude: -7.0, longitude: 110.0);
+
   @override
   void initState() {
     super.initState();
-    Timer.periodic(const Duration(seconds: 10), (timer) {
-      if (mounted) {
-        // _loadData();
-      }
-    });
+    initMap();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    widget.locationUpdatedNotif.removeListener(updateLocation);
+  }
+
+  void initMap() async {
     controller = MapController(
-      initMapWithUserPosition: const UserTrackingOption(enableTracking: true),
+      // initMapWithUserPosition: const UserTrackingOption(enableTracking: false),
+      initPosition: markerPos,
     );
 
     controller.listenerMapSingleTapping.addListener(() {
       if (controller.listenerMapSingleTapping.value != null) {
-        double latitude =
-            controller.listenerMapSingleTapping.value!.latitude.toDouble();
-        print(latitude);
+        // double latitude =
+        //     controller.listenerMapSingleTapping.value!.latitude.toDouble();
+        // print(latitude);
       }
     });
+
+    widget.locationUpdatedNotif.addListener(updateLocation);
+  }
+
+  void updateLocation() async {
+    if (mounted) {
+      final new_location = GeoPoint(
+        latitude: widget.sensorData.location.latitude,
+        longitude: widget.sensorData.location.longitude,
+      );
+      await controller.goToLocation(new_location);
+      await controller.removeMarker(markerPos);
+      await controller.addMarker(new_location,
+          markerIcon: MarkerIcon(
+            icon: Icon(
+              Icons.car_crash,
+              color: Colors.amber.shade900,
+            ),
+          ));
+
+      markerPos = new_location;
+      print("SAFJASFJLAKSFJPKASJFLKLASJKFASFK:LASA : $markerPos");
+    }
   }
 
   @override
@@ -54,12 +87,30 @@ class _MapsLocationState extends State<MapsLocation> {
       ),
       child: OSMFlutter(
         controller: controller,
-        osmOption: const OSMOption(
+        onMapIsReady: (p0) async {
+          await controller.addMarker(markerPos,
+              markerIcon: MarkerIcon(
+                icon: Icon(
+                  Icons.car_crash,
+                  color: Colors.amber.shade900,
+                ),
+              ));
+        },
+        osmOption: OSMOption(
           zoomOption: ZoomOption(
-            initZoom: 17,
+            initZoom: 14,
             maxZoomLevel: 19,
             minZoomLevel: 2,
             stepZoom: 1.0,
+          ),
+          markerOption: MarkerOption(
+            defaultMarker: MarkerIcon(
+              icon: Icon(
+                Icons.person_pin_circle,
+                color: Colors.blue,
+                size: 56,
+              ),
+            ),
           ),
         ),
       ),
