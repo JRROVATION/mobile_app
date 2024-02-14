@@ -17,11 +17,14 @@ class HomeScreen extends StatefulWidget {
     required this.sensorData,
     required this.conditionData,
     required this.locationUpdatedNotif,
+    required this.isServerConnected,
   });
 
   SensorData sensorData;
   ConditionData conditionData;
   ValueNotifier locationUpdatedNotif;
+
+  bool isServerConnected;
 
   @override
   State<StatefulWidget> createState() {
@@ -44,6 +47,9 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                !widget.isServerConnected
+                    ? Text("Connecting to server...")
+                    : SizedBox(),
                 Padding(
                   padding:
                       const EdgeInsetsDirectional.symmetric(horizontal: 15),
@@ -73,10 +79,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(
                   height: 30,
                 ),
-                MapsLocation(
-                  sensorData: widget.sensorData,
-                  locationUpdatedNotif: widget.locationUpdatedNotif,
-                ),
+                // MapsLocation(
+                //   sensorData: widget.sensorData,
+                //   locationUpdatedNotif: widget.locationUpdatedNotif,
+                // ),
                 const SizedBox(
                   height: 17,
                 ),

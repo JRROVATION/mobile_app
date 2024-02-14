@@ -41,6 +41,9 @@ dependencies:
   flutter_osm_plugin: ^0.60.5
   flutter_bluetooth_serial: ^0.4.0
   permission_handler: ^10.4.5
+  web_socket_channel: ^2.4.0
+  web_socket_client: ^0.1.0
+  args: ^2.4.2
 
 
 dev_dependencies:
