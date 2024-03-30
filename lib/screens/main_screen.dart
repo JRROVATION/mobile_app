@@ -68,7 +68,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void initServer() async {
-    final addr = Uri.parse('ws://sites.saveforest.cloud:7070');
+    final addr = Uri.parse('ws://sites.saveforest.cloud:7080');
 
     print("connecting to server");
 

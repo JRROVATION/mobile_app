@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:web_socket_client/web_socket_client.dart';
 import 'package:args/args.dart';
@@ -12,7 +13,7 @@ void main(List<String> aargs) async {
 
   final isDriver = argResults["is-driver"];
 
-  final addr = Uri.parse('ws://sites.saveforest.cloud:7070');
+  final addr = Uri.parse('ws://sites.saveforest.cloud:7080');
   // final addr = Uri.parse('ws://localhost:3000');
   print("connecting");
   // Create a WebSocket client.
@@ -40,14 +41,15 @@ void main(List<String> aargs) async {
 
   if (isDriver) {
     int speed = 0;
+    double i = 0.00;
     final timer = Timer.periodic(Duration(seconds: 2), (timer) {
       // Send a message to the server.
       final datatest = {
         "id": "post-sensor",
         "speed": speed,
         "location": {
-          "latitude": -7.55341,
-          // "longitude": 103.55213,
+          "latitude": -7.0 + (i += 0.001),
+          "longitude": 110.0,
         },
         "expression": 0,
         // "drowsiness": true,
