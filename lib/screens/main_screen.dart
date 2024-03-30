@@ -94,7 +94,7 @@ class _MainScreenState extends State<MainScreen> {
 
   void _sendClientInfoToServer() {
     final clientInfo = {
-      "id": "user-info",
+      "id": "client-info",
       "isDriver": isDriver,
     };
 
@@ -122,7 +122,7 @@ class _MainScreenState extends State<MainScreen> {
     _handleMessageData(data);
   }
 
-  void _sendToServer(message) {
+  void _sendToServer(String message) {
     serverSocket.send(message);
   }
 
@@ -132,9 +132,6 @@ class _MainScreenState extends State<MainScreen> {
     final data = convert.jsonDecode(message);
 
     print("received from bt ID : ${data["id"]}");
-
-    // relay to server
-    _sendToServer(message);
 
     _handleMessageData(data);
   }
@@ -193,6 +190,12 @@ class _MainScreenState extends State<MainScreen> {
           });
 
           locationUpdatedNotif.value = !locationUpdatedNotif.value;
+        }
+
+        //if device is driver, send sensor data to server
+        if (isDriver) {
+          data["id"] = "post-sensor"; //change msg id to post
+          _sendToServer(convert.jsonEncode(data));
         }
         break;
 

@@ -14,8 +14,8 @@ class BluetoothPairing extends StatefulWidget {
 }
 
 class _BluetoothPairingState extends State<BluetoothPairing> {
-  // final String btDeviceID = "ADVISE";
-  final String btDeviceID = "DESKTOP-31G4UA1"; //Test
+  final String btDeviceID = "ADVISE";
+  // final String btDeviceID = "DESKTOP-31G4UA1"; //Test
   bool isBluetoothOn =
       false; // State untuk mengetahui apakah Bluetooth aktif atau tidak
   bool isPairing = false; // State untuk mengetahui apakah sedang proses pairing

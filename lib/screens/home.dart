@@ -79,10 +79,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(
                   height: 30,
                 ),
-                // MapsLocation(
-                //   sensorData: widget.sensorData,
-                //   locationUpdatedNotif: widget.locationUpdatedNotif,
-                // ),
+                MapsLocation(
+                  sensorData: widget.sensorData,
+                  locationUpdatedNotif: widget.locationUpdatedNotif,
+                ),
                 const SizedBox(
                   height: 17,
                 ),

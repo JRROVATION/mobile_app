@@ -12,8 +12,8 @@ void main(List<String> aargs) async {
 
   final isDriver = argResults["is-driver"];
 
-  // final addr = Uri.parse('ws://sites.saveforest.cloud:7070');
-  final addr = Uri.parse('ws://localhost:3000');
+  final addr = Uri.parse('ws://sites.saveforest.cloud:7070');
+  // final addr = Uri.parse('ws://localhost:3000');
   print("connecting");
   // Create a WebSocket client.
   final socket = WebSocket(addr);
@@ -45,8 +45,10 @@ void main(List<String> aargs) async {
       final datatest = {
         "id": "post-sensor",
         "speed": speed,
-        // "latitude": -7.55341,
-        // "longitude": 103.55213,
+        "location": {
+          "latitude": -7.55341,
+          // "longitude": 103.55213,
+        },
         "expression": 0,
         // "drowsiness": true,
       }; //dummy data
