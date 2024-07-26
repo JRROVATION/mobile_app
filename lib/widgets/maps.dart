@@ -43,13 +43,13 @@ class _MapsLocationState extends State<MapsLocation> {
       initPosition: markerPos,
     );
 
-    controller.listenerMapSingleTapping.addListener(() {
-      if (controller.listenerMapSingleTapping.value != null) {
-        // double latitude =
-        //     controller.listenerMapSingleTapping.value!.latitude.toDouble();
-        // print(latitude);
-      }
-    });
+    // controller.listenerMapSingleTapping.addListener(() {
+    //   if (controller.listenerMapSingleTapping.value != null) {
+    //     // double latitude =
+    //     //     controller.listenerMapSingleTapping.value!.latitude.toDouble();
+    //     // print(latitude);
+    //   }
+    // });
 
     widget.locationUpdatedNotif.addListener(updateLocation);
   }
@@ -70,6 +70,8 @@ class _MapsLocationState extends State<MapsLocation> {
             ),
           ));
 
+      // controller.changeLocationMarker(
+      //     oldLocation: markerPos, newLocation: new_location);
       markerPos = new_location;
       print("SAFJASFJLAKSFJPKASJFLKLASJKFASFK:LASA : $markerPos");
     }
