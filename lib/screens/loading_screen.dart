@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'pairing_screen.dart';
+import 'main_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LoadingScreen extends StatefulWidget {
@@ -21,7 +22,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const BluetoothPairing()),
+        MaterialPageRoute(builder: (context) => const MainScreen()),
       );
     });
   }

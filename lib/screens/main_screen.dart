@@ -68,7 +68,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void initServer() async {
-    final addr = Uri.parse('ws://sites.saveforest.cloud:7070');
+    final addr = Uri.parse('ws://theunra.site:3001');
 
     print("connecting to server");
 
@@ -95,7 +95,10 @@ class _MainScreenState extends State<MainScreen> {
   void _sendClientInfoToServer() {
     final clientInfo = {
       "id": "client-info",
-      "isDriver": isDriver,
+      "data": {
+        "clientId": "9bb844ce-c4a2-4c3a-abe3-4064f1e5e896",
+        "isDevice": false
+      }
     };
 
     serverSocket.send(convert.jsonEncode(clientInfo));
@@ -158,7 +161,7 @@ class _MainScreenState extends State<MainScreen> {
 
   void _handleMessageData(data) {
     switch (data["id"]) {
-      case "get-sensor":
+      case "vehicle-data":
         if (data["speed"] != null) {
           print("speed : ${data["speed"]}");
           setState(() {
@@ -180,12 +183,12 @@ class _MainScreenState extends State<MainScreen> {
           });
         }
 
-        if (data["location"] != null) {
-          print(data["location"]);
+        if (data["latitude"] != null && data["longitude"] != null) {
+          print('${data["latitude"]} ${data["longitude"]}');
           setState(() {
             sensorData.location = Location(
-              latitude: data["location"]["latitude"] + 0.0,
-              longitude: data["location"]["longitude"] + 0.0,
+              latitude: data["latitude"] + 0.0,
+              longitude: data["longitude"] + 0.0,
             );
           });
 

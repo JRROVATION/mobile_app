@@ -6,14 +6,16 @@ import 'package:web_socket_client/web_socket_client.dart';
 import 'package:args/args.dart';
 
 void main(List<String> aargs) async {
-  final parser = ArgParser()..addFlag("is-driver", negatable: false, abbr: 'd');
+  final parser = ArgParser()..addFlag("is-device", negatable: false, abbr: 'd');
 
   ArgResults argResults = parser.parse(aargs);
 
-  final isDriver = argResults["is-driver"];
+  final isDevice = argResults["is-device"];
 
-  final addr = Uri.parse('ws://sites.saveforest.cloud:7070');
+  // final addr = Uri.parse('ws://sites.saveforest.cloud:7080');
   // final addr = Uri.parse('ws://localhost:3000');
+  final addr = Uri.parse('ws://theunra.site:3001');
+
   print("connecting");
   // Create a WebSocket client.
   final socket = WebSocket(addr);
@@ -30,7 +32,10 @@ void main(List<String> aargs) async {
       print("connected");
       final clientInfo = {
         "id": "client-info",
-        "isDriver": isDriver,
+        "data": {
+          "clientId": "9bb844ce-c4a2-4c3a-abe3-4064f1e5e896",
+          "isDevice": isDevice,
+        },
       };
       socket.send(jsonEncode(clientInfo));
     }
@@ -38,19 +43,22 @@ void main(List<String> aargs) async {
 
   await socket.connection.firstWhere((state) => state is Connected);
 
-  if (isDriver) {
+  if (isDevice) {
     int speed = 0;
     final timer = Timer.periodic(Duration(seconds: 2), (timer) {
       // Send a message to the server.
       final datatest = {
-        "id": "post-sensor",
-        "speed": speed,
-        "location": {
-          "latitude": -7.55341,
-          // "longitude": 103.55213,
-        },
-        "expression": 0,
-        // "drowsiness": true,
+        "id": "vehicle-data",
+        "data": {
+          "speed": speed,
+          "location": {
+            "latitude": -7.55341,
+            // "longitude": 103.55213,
+          },
+          "expression": 0,
+          "userId": "9bb844ce-c4a2-4c3a-abe3-4064f1e5e896",
+          // "drowsiness": true,
+        }
       }; //dummy data
       speed++;
       socket.send(jsonEncode(datatest));
