@@ -13,11 +13,7 @@ void main(List<String> aargs) async {
 
   final isDevice = argResults["is-device"];
 
-<<<<<<< HEAD
   // final addr = Uri.parse('ws://sites.saveforest.cloud:7080');
-=======
-  final addr = Uri.parse('ws://sites.saveforest.cloud:7080');
->>>>>>> 1db713b979e211db71f03f70ae99f025c5a7dde1
   // final addr = Uri.parse('ws://localhost:3000');
   final addr = Uri.parse('ws://theunra.site:3001');
 
@@ -54,7 +50,6 @@ void main(List<String> aargs) async {
     final timer = Timer.periodic(Duration(seconds: 2), (timer) {
       // Send a message to the server.
       final datatest = {
-<<<<<<< HEAD
         "id": "vehicle-data",
         "data": {
           "speed": speed,
@@ -66,16 +61,6 @@ void main(List<String> aargs) async {
           "userId": "9bb844ce-c4a2-4c3a-abe3-4064f1e5e896",
           // "drowsiness": true,
         }
-=======
-        "id": "post-sensor",
-        "speed": speed,
-        "location": {
-          "latitude": -7.0 + (i += 0.001),
-          "longitude": 110.0,
-        },
-        "expression": 0,
-        // "drowsiness": true,
->>>>>>> 1db713b979e211db71f03f70ae99f025c5a7dde1
       }; //dummy data
       speed++;
       socket.send(jsonEncode(datatest));
