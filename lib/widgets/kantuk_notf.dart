@@ -3,12 +3,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_app/model/condition.dart';
 
 class KantukNotf extends StatefulWidget {
-  KantukNotf({
+  const KantukNotf({
     super.key,
     required this.conditionData,
   });
 
-  ConditionData conditionData;
+  final ConditionData conditionData;
   @override
   State<KantukNotf> createState() {
     return _KantukNotfState();

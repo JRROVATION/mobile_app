@@ -3,46 +3,44 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_app/model/sensor.dart';
 
 class KecepatanNotf extends StatefulWidget {
-  KecepatanNotf({
+  const KecepatanNotf({
     super.key,
     required this.sensorData,
   });
 
-  SensorData sensorData;
+  final SensorData sensorData;
   @override
-  State<KecepatanNotf> createState() {
-    return _KecepatanNotfState();
-  }
+  State<KecepatanNotf> createState() => _KecepatanNotfState();
 }
 
 class _KecepatanNotfState extends State<KecepatanNotf> {
-  void _openLiveMapOverlay() {
-    showModalBottomSheet(
-      context: context,
-      showDragHandle: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(50),
-        ),
-      ),
-      builder: (ctx) {
-        return const Column(
-          children: [],
-        );
-      },
-    );
-  }
+  // void _openLiveMapOverlay() {
+  //   showModalBottomSheet(
+  //     context: context,
+  //     showDragHandle: true,
+  //     shape: const RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.vertical(
+  //         top: Radius.circular(50),
+  //       ),
+  //     ),
+  //     builder: (ctx) {
+  //       return const Column(
+  //         children: [],
+  //       );
+  //     },
+  //   );
+  // }
 
-  StatusKecepatanString() {
+  statusKecepatanString() {
     String speedString = "";
     double speed = widget.sensorData.speed;
-    if (speed > 70)
+    if (speed > 70) {
       speedString = "Tinggi";
-    else if (speed > 50)
+    } else if (speed > 50) {
       speedString = "Normal";
-    else
+    } else {
       speedString = "Rendah";
-
+    }
     return "Kecepatan $speedString";
   }
 
@@ -63,7 +61,7 @@ class _KecepatanNotfState extends State<KecepatanNotf> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              StatusKecepatanString(),
+              statusKecepatanString(),
               style: GoogleFonts.poppins(
                 fontSize: 12,
                 fontWeight: FontWeight.w500,

@@ -3,12 +3,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_app/model/condition.dart';
 
 class KeadaanEmosi extends StatefulWidget {
-  KeadaanEmosi({
+  const KeadaanEmosi({
     super.key,
     required this.conditionData,
   });
 
-  ConditionData conditionData;
+  final ConditionData conditionData;
 
   @override
   State<StatefulWidget> createState() {
@@ -46,9 +46,9 @@ class _KeadaanEmosiState extends State<KeadaanEmosi> {
     );
   }
 
-  EmotionImage() {
+  emotionImage() {
     return Image.asset(
-      "assets/images/emot_${GetExpressionString(widget.conditionData.expression)}.png",
+      "assets/images/emot_${getExpressionString(widget.conditionData.expression)}.png",
     );
   }
 
@@ -94,11 +94,11 @@ class _KeadaanEmosiState extends State<KeadaanEmosi> {
                 Container(
                   width: 100,
                   height: 100,
-                  padding: EdgeInsets.all(20),
-                  child: EmotionImage(),
+                  padding: const EdgeInsets.all(20),
+                  child: emotionImage(),
                 ),
                 Text(
-                  GetExpressionStateStringID(widget.conditionData.expression),
+                  getExpressionStateStringID(widget.conditionData.expression),
                   style: GoogleFonts.poppins(
                     fontSize: 15,
                     fontWeight: FontWeight.w500,

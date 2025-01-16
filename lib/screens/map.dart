@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
@@ -58,8 +59,10 @@ class MapScreenState extends State<MapScreen> {
 
     _latLonData.clear();
     for (final item in jsonResponse['message']) {
-      print('latitude: ${item['latitude']}');
-      print('longitude: ${item['longitude']}');
+      if (kDebugMode) {
+        print('latitude: ${item['latitude']}');
+        print('longitude: ${item['longitude']}');
+      }
       setState(() {
         _latLonData.add(GeoPoint(
           latitude: item['latitude'] + 0.0,
@@ -70,9 +73,10 @@ class MapScreenState extends State<MapScreen> {
 
     await controller.goToLocation(_latLonData.last);
     controller.clearAllRoads();
-    String roadInformation = await controller.drawRoadManually(
+    // String roadInformation =
+    await controller.drawRoadManually(
       _latLonData,
-      RoadOption(
+      const RoadOption(
         roadColor: Colors.red,
         roadWidth: 20,
       ),

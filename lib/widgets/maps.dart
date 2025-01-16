@@ -1,19 +1,17 @@
-import 'dart:async';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_app/model/sensor.dart';
 
 class MapsLocation extends StatefulWidget {
-  MapsLocation({
+  const MapsLocation({
     super.key,
     required this.sensorData,
     required this.locationUpdatedNotif,
   });
 
-  SensorData sensorData;
-  ValueNotifier locationUpdatedNotif;
+  final SensorData sensorData;
+  final ValueNotifier locationUpdatedNotif;
 
   @override
   State<StatefulWidget> createState() {
@@ -56,13 +54,13 @@ class _MapsLocationState extends State<MapsLocation> {
 
   void updateLocation() async {
     if (mounted) {
-      final new_location = GeoPoint(
+      final newLocation = GeoPoint(
         latitude: widget.sensorData.location.latitude,
         longitude: widget.sensorData.location.longitude,
       );
-      await controller.goToLocation(new_location);
+      await controller.goToLocation(newLocation);
       await controller.removeMarker(markerPos);
-      await controller.addMarker(new_location,
+      await controller.addMarker(newLocation,
           markerIcon: MarkerIcon(
             icon: Icon(
               Icons.car_crash,
@@ -72,8 +70,10 @@ class _MapsLocationState extends State<MapsLocation> {
 
       // controller.changeLocationMarker(
       //     oldLocation: markerPos, newLocation: new_location);
-      markerPos = new_location;
-      print("SAFJASFJLAKSFJPKASJFLKLASJKFASFK:LASA : $markerPos");
+      markerPos = newLocation;
+      if (kDebugMode) {
+        print("SAFJASFJLAKSFJPKASJFLKLASJKFASFK:LASA : $markerPos");
+      }
     }
   }
 
@@ -99,14 +99,14 @@ class _MapsLocationState extends State<MapsLocation> {
               ));
         },
         osmOption: OSMOption(
-          zoomOption: ZoomOption(
+          zoomOption: const ZoomOption(
             initZoom: 14,
             maxZoomLevel: 19,
             minZoomLevel: 2,
             stepZoom: 1.0,
           ),
           markerOption: MarkerOption(
-            defaultMarker: MarkerIcon(
+            defaultMarker: const MarkerIcon(
               icon: Icon(
                 Icons.person_pin_circle,
                 color: Colors.blue,

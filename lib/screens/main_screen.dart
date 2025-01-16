@@ -1,11 +1,10 @@
-import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert' as convert;
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:web_socket_client/web_socket_client.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_app/model/condition.dart';
 import 'package:mobile_app/screens/home.dart';
 import 'package:mobile_app/widgets/app_bar.dart';
@@ -26,7 +25,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  int _currentIndex = 0;
+  final int _currentIndex = 0;
   bool isServerConnected = false;
 
   bool isDriver = false;
@@ -38,7 +37,7 @@ class _MainScreenState extends State<MainScreen> {
 
   ValueNotifier locationUpdatedNotif = ValueNotifier(false);
 
-  Pages() {
+  pages() {
     switch (_currentIndex) {
       case 0:
       default:
@@ -70,12 +69,16 @@ class _MainScreenState extends State<MainScreen> {
   void initServer() async {
     final addr = Uri.parse('ws://theunra.site:3001');
 
-    print("connecting to server");
+    if (kDebugMode) {
+      print("connecting to server");
+    }
 
     serverSocket = WebSocket(addr);
     await serverSocket.connection.firstWhere((state) => state is Connected);
 
-    print("Server connected");
+    if (kDebugMode) {
+      print("Server connected");
+    }
 
     setState(() {
       isServerConnected = true;
@@ -105,7 +108,9 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void _handleServerConnectionState(state) {
-    print("Server conn state changed : $state");
+    if (kDebugMode) {
+      print("Server conn state changed : $state");
+    }
     if (state is Disconnected || state is Reconnecting) {
       isServerConnected = false;
     } else if (state is Connected || state is Reconnected) {
@@ -119,7 +124,9 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void _handleServerMessage(message) {
-    print("received from server $message");
+    if (kDebugMode) {
+      print("received from server $message");
+    }
     final data = convert.jsonDecode(message);
 
     _handleMessageData(data);
@@ -131,10 +138,14 @@ class _MainScreenState extends State<MainScreen> {
 
   void _onReceivedBT(payload) {
     String message = String.fromCharCodes(payload);
-    print("received from bt : $message");
+    if (kDebugMode) {
+      print("received from bt : $message");
+    }
     final data = convert.jsonDecode(message);
 
-    print("received from bt ID : ${data["id"]}");
+    if (kDebugMode) {
+      print("received from bt ID : ${data["id"]}");
+    }
 
     _handleMessageData(data);
   }
@@ -142,8 +153,10 @@ class _MainScreenState extends State<MainScreen> {
   void _sendBT(payload) {
     widget.bluetoothConnection!.output.add(payload);
     widget.bluetoothConnection!.output.allSent.then((value) {
-      print("send to bt success");
-      Future.delayed(Duration(seconds: 3), () {
+      if (kDebugMode) {
+        print("send to bt success");
+      }
+      Future.delayed(const Duration(seconds: 3), () {
         final ll = 'hello\r\n'.codeUnits;
         _sendBT(Uint8List.fromList(ll));
       });
@@ -163,28 +176,36 @@ class _MainScreenState extends State<MainScreen> {
     switch (data["id"]) {
       case "vehicle-data":
         if (data["speed"] != null) {
-          print("speed : ${data["speed"]}");
+          if (kDebugMode) {
+            print("speed : ${data["speed"]}");
+          }
           setState(() {
             sensorData.speed = data["speed"] + 0.0;
           });
         }
 
         if (data["drowsiness"] != null) {
-          print("drowsiness : ${data["drowsiness"]}");
+          if (kDebugMode) {
+            print("drowsiness : ${data["drowsiness"]}");
+          }
           setState(() {
             conditionData.drowsy = data["drowsiness"];
           });
         }
 
         if (data["expression"] != null) {
-          print("expression : ${data["expression"]}");
+          if (kDebugMode) {
+            print("expression : ${data["expression"]}");
+          }
           setState(() {
             conditionData.expression = Expression.values[data["expression"]];
           });
         }
 
         if (data["latitude"] != null && data["longitude"] != null) {
-          print('${data["latitude"]} ${data["longitude"]}');
+          if (kDebugMode) {
+            print('${data["latitude"]} ${data["longitude"]}');
+          }
           setState(() {
             sensorData.location = Location(
               latitude: data["latitude"] + 0.0,
@@ -203,7 +224,9 @@ class _MainScreenState extends State<MainScreen> {
         break;
 
       default:
-        print("unhandled msg ID");
+        if (kDebugMode) {
+          print("unhandled msg ID");
+        }
         break;
     }
   }
@@ -212,7 +235,7 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(currentIndex: _currentIndex),
-      body: Pages(),
+      body: pages(),
       // bottomNavigationBar: const SizedBox(
       //   height: 83,
       // child: BottomNavigationBar(

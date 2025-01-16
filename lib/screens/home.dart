@@ -4,15 +4,13 @@ import 'package:intl/intl.dart';
 import 'package:mobile_app/model/condition.dart';
 import 'package:mobile_app/model/sensor.dart';
 import 'package:mobile_app/widgets/keadaan_emosi.dart';
-import 'package:mobile_app/widgets/berkendara_notf.dart';
 import 'package:mobile_app/widgets/kantuk_notf.dart';
 import 'package:mobile_app/widgets/kecepatan_sensor.dart';
 import 'package:mobile_app/widgets/maps.dart';
 import 'package:mobile_app/widgets/kecepatan_notf.dart';
-import 'package:mobile_app/widgets/rincian_sensor.dart';
 
 class HomeScreen extends StatefulWidget {
-  HomeScreen({
+  const HomeScreen({
     super.key,
     required this.sensorData,
     required this.conditionData,
@@ -20,11 +18,11 @@ class HomeScreen extends StatefulWidget {
     required this.isServerConnected,
   });
 
-  SensorData sensorData;
-  ConditionData conditionData;
-  ValueNotifier locationUpdatedNotif;
+  final SensorData sensorData;
+  final ConditionData conditionData;
+  final ValueNotifier locationUpdatedNotif;
 
-  bool isServerConnected;
+  final bool isServerConnected;
 
   @override
   State<StatefulWidget> createState() {
@@ -40,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
         .toString();
     return MaterialApp(
       home: Scaffold(
-        backgroundColor: Color.fromARGB(255, 255, 255, 255),
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 47 / 2),
           child: SingleChildScrollView(
@@ -48,8 +46,8 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 !widget.isServerConnected
-                    ? Text("Connecting to server...")
-                    : SizedBox(),
+                    ? const Text("Connecting to server...")
+                    : const SizedBox(),
                 Padding(
                   padding:
                       const EdgeInsetsDirectional.symmetric(horizontal: 15),
@@ -64,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       Text(
-                        '$date',
+                        date,
                         style: GoogleFonts.poppins(
                           fontSize: 15,
                           color: Colors.black54,
@@ -93,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     KeadaanEmosi(
                       conditionData: widget.conditionData,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 15,
                     ),
                     Expanded(
@@ -104,11 +102,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           KantukNotf(
                             conditionData: widget.conditionData,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 7,
                           ),
                           // DurasiNotf(),
-                          SizedBox(
+                          const SizedBox(
                             height: 7,
                           ),
                           KecepatanNotf(

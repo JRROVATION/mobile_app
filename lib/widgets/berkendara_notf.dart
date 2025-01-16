@@ -10,22 +10,22 @@ class DurasiNotf extends StatefulWidget {
 }
 
 class _DurasiNotfState extends State<DurasiNotf> {
-  void _openLiveMapOverlay() {
-    showModalBottomSheet(
-      context: context,
-      showDragHandle: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(50),
-        ),
-      ),
-      builder: (ctx) {
-        return const Column(
-          children: [],
-        );
-      },
-    );
-  }
+  // void _openLiveMapOverlay() {
+  //   showModalBottomSheet(
+  //     context: context,
+  //     showDragHandle: true,
+  //     shape: const RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.vertical(
+  //         top: Radius.circular(50),
+  //       ),
+  //     ),
+  //     builder: (ctx) {
+  //       return const Column(
+  //         children: [],
+  //       );
+  //     },
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {

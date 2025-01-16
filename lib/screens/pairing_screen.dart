@@ -7,10 +7,10 @@ import 'package:permission_handler/permission_handler.dart';
 import 'dart:async';
 
 class BluetoothPairing extends StatefulWidget {
-  const BluetoothPairing({Key? key}) : super(key: key);
+  const BluetoothPairing({super.key});
 
   @override
-  _BluetoothPairingState createState() => _BluetoothPairingState();
+  State<BluetoothPairing> createState() => _BluetoothPairingState();
 }
 
 class _BluetoothPairingState extends State<BluetoothPairing> {
@@ -28,12 +28,12 @@ class _BluetoothPairingState extends State<BluetoothPairing> {
 
   bool isBTButtonToggled = false;
 
-  String? progressMsg = null;
+  String? progressMsg;
 
   BluetoothState bluetoothState = BluetoothState.UNKNOWN;
-  BluetoothDevice? bluetoothDevice = null;
+  BluetoothDevice? bluetoothDevice;
   StreamSubscription<BluetoothDiscoveryResult>? discoveryStreamSubscription;
-  BluetoothConnection? bluetoothConnection = null;
+  BluetoothConnection? bluetoothConnection;
 
   @override
   void initState() {
@@ -70,9 +70,9 @@ class _BluetoothPairingState extends State<BluetoothPairing> {
 
       setProgressMessage("Pairing");
 
-      final _isPaired = await pairBT();
+      final isPaired = await pairBT();
 
-      if (_isPaired) {
+      if (isPaired) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => MainScreen(
@@ -123,7 +123,7 @@ class _BluetoothPairingState extends State<BluetoothPairing> {
     final bondedDevices =
         await FlutterBluetoothSerial.instance.getBondedDevices();
 
-    bondedDevices.forEach((element) {
+    for (var element in bondedDevices) {
       if (element.name == btDeviceID) {
         //ready to pair
         setState(() {
@@ -131,7 +131,7 @@ class _BluetoothPairingState extends State<BluetoothPairing> {
           isBonded = true;
         });
       }
-    });
+    }
 
     if (!isBonded) {
       await findBTDevice();
@@ -149,16 +149,16 @@ class _BluetoothPairingState extends State<BluetoothPairing> {
     final st = FlutterBluetoothSerial.instance.startDiscovery();
     final discovered = await st.toList();
 
-    BluetoothDevice? founddevice = null;
+    BluetoothDevice? founddevice;
 
-    discovered.forEach((element) {
+    for (var element in discovered) {
       print("Discovered : ${element.device.name}");
       founddevice = element.device;
-    });
+    }
 
     if (founddevice == null) return false;
 
-    BluetoothDevice device = founddevice!;
+    BluetoothDevice device = founddevice;
 
     setState(() {
       bluetoothDevice = device;
@@ -236,7 +236,7 @@ class _BluetoothPairingState extends State<BluetoothPairing> {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                Text("Click to turn bluetooth mode ON"),
+                const Text("Click to turn bluetooth mode ON"),
                 isBonded
                     ? Text("is bonded $btDeviceID")
                     : Text("no bond $btDeviceID"),
@@ -255,7 +255,7 @@ class _BluetoothPairingState extends State<BluetoothPairing> {
                 ),
                 progressMsg != null
                     ? Text("$progressMsg")
-                    : SizedBox(
+                    : const SizedBox(
                         height: 10,
                       ),
                 // if (isPairing)
@@ -294,7 +294,7 @@ class _BluetoothPairingState extends State<BluetoothPairing> {
               onTap: () {
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
-                    builder: (context) => MainScreen(),
+                    builder: (context) => const MainScreen(),
                   ),
                 );
               },

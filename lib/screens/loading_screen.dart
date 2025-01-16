@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'pairing_screen.dart';
 import 'main_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -20,17 +19,19 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
   void navigateToBPContent() {
     Future.delayed(const Duration(seconds: 3), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const MainScreen()),
-      );
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const MainScreen()),
+        );
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 255, 255, 255),
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

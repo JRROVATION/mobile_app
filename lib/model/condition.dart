@@ -9,8 +9,8 @@ enum Expression {
   surprised,
 }
 
-GetExpressionString(Expression exp) {
-  List<String> exp_dict = [
+getExpressionString(Expression exp) {
+  List<String> expDict = [
     "angry",
     "disgusted",
     "fearful",
@@ -19,11 +19,11 @@ GetExpressionString(Expression exp) {
     "sad",
     "surprised",
   ];
-  return exp_dict[exp.index];
+  return expDict[exp.index];
 }
 
-GetExpressionStateStringID(Expression exp) {
-  List<String> exp_dict = [
+getExpressionStateStringID(Expression exp) {
+  List<String> expDict = [
     "Marah",
     "Jijik",
     "Takut",
@@ -32,7 +32,7 @@ GetExpressionStateStringID(Expression exp) {
     "Sedih",
     "Kaget",
   ];
-  return exp_dict[exp.index];
+  return expDict[exp.index];
 }
 
 class ConditionData {
