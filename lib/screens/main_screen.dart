@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert' as convert;
@@ -67,7 +65,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void initServer() async {
-    final addr = Uri.parse('ws://theunra.site:3001');
+    final addr = Uri.parse('https://advise.zonainovasi.site/api');
 
     if (kDebugMode) {
       print("connecting to server");

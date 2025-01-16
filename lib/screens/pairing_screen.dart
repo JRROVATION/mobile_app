@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -54,7 +55,9 @@ class _BluetoothPairingState extends State<BluetoothPairing> {
     if (!isBTInit) {
       final initstate = await initBT();
       if (!initstate) {
-        print("Init bt failed");
+        if (kDebugMode) {
+          print("Init bt failed");
+        }
         setProgressMessage("Bluetooth initialization failed");
       } else {
         setState(() {
@@ -73,13 +76,15 @@ class _BluetoothPairingState extends State<BluetoothPairing> {
       final isPaired = await pairBT();
 
       if (isPaired) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => MainScreen(
-              bluetoothConnection: bluetoothConnection,
+        if (mounted) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => MainScreen(
+                bluetoothConnection: bluetoothConnection,
+              ),
             ),
-          ),
-        );
+          );
+        }
       }
     }
 
@@ -97,8 +102,9 @@ class _BluetoothPairingState extends State<BluetoothPairing> {
   Future<bool> initBT() async {
     final btstate = await FlutterBluetoothSerial.instance.state;
 
-    print("Bluetooth state : $btstate");
-
+    if (kDebugMode) {
+      print("Bluetooth state : $btstate");
+    }
     setState(() {
       bluetoothState = btstate;
       if (btstate == BluetoothState.STATE_ON) isBluetoothOn = true;
@@ -138,7 +144,9 @@ class _BluetoothPairingState extends State<BluetoothPairing> {
     }
 
     if (isBonded) {
-      print("ready to pel");
+      if (kDebugMode) {
+        print("ready to pel");
+      }
     }
 
     return true;
@@ -152,7 +160,9 @@ class _BluetoothPairingState extends State<BluetoothPairing> {
     BluetoothDevice? founddevice;
 
     for (var element in discovered) {
-      print("Discovered : ${element.device.name}");
+      if (kDebugMode) {
+        print("Discovered : ${element.device.name}");
+      }
       founddevice = element.device;
     }
 
@@ -170,9 +180,13 @@ class _BluetoothPairingState extends State<BluetoothPairing> {
             .bondDeviceAtAddress(device.address);
 
         if (bondstatus == null) {
-          print("bondstatus is null");
+          if (kDebugMode) {
+            print("bondstatus is null");
+          }
         } else {
-          print("bondstatus $bondstatus");
+          if (kDebugMode) {
+            print("bondstatus $bondstatus");
+          }
           if (bondstatus) {
             // is ok, continue
             setState(() {
@@ -181,16 +195,22 @@ class _BluetoothPairingState extends State<BluetoothPairing> {
           }
         }
       } on PlatformException catch (e) {
-        print(e);
+        if (kDebugMode) {
+          print(e);
+        }
         if (e.message == "device already bonded") {
-          print("device already bonded");
+          if (kDebugMode) {
+            print("device already bonded");
+          }
           setProgressMessage("Device already bonded");
           // is ok, continue
           setState(() {
             isBonded = true;
           });
         } else {
-          print(e.message); //other error
+          if (kDebugMode) {
+            print(e.message); //other error
+          }
         }
       }
     }
@@ -210,7 +230,9 @@ class _BluetoothPairingState extends State<BluetoothPairing> {
       });
       return true;
     } catch (e) {
-      print("Pairing failed : $e");
+      if (kDebugMode) {
+        print("Pairing failed : $e");
+      }
       setProgressMessage("Pairing failed");
       setState(() {
         isPairing = false;
