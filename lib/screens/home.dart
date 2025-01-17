@@ -36,102 +36,99 @@ class _HomeScreenState extends State<HomeScreen> {
     final date = DateFormat("EEEE, d MMMM yyyy", "id_ID")
         .format(DateTime.now())
         .toString();
-    return MaterialApp(
-      home: Scaffold(
-        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 47 / 2),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                !widget.isServerConnected
-                    ? const Text("Connecting to server...")
-                    : const SizedBox(),
-                Padding(
-                  padding:
-                      const EdgeInsetsDirectional.symmetric(horizontal: 15),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Selamat Pagi',
-                        style: GoogleFonts.poppins(
-                          fontSize: 23,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      Text(
-                        date,
-                        style: GoogleFonts.poppins(
-                          fontSize: 15,
-                          color: Colors.black54,
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                MapsLocation(
-                  sensorData: widget.sensorData,
-                  locationUpdatedNotif: widget.locationUpdatedNotif,
-                ),
-                const SizedBox(
-                  height: 17,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+    return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 47 / 2),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              !widget.isServerConnected
+                  ? const Text("Connecting to server...")
+                  : const SizedBox(),
+              Padding(
+                padding: const EdgeInsetsDirectional.symmetric(horizontal: 15),
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    KeadaanEmosi(
-                      conditionData: widget.conditionData,
+                    Text(
+                      'Selamat Pagi',
+                      style: GoogleFonts.poppins(
+                        fontSize: 23,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Text(
+                      date,
+                      style: GoogleFonts.poppins(
+                        fontSize: 15,
+                        color: Colors.black54,
+                      ),
                     ),
                     const SizedBox(
-                      width: 15,
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          KantukNotf(
-                            conditionData: widget.conditionData,
-                          ),
-                          const SizedBox(
-                            height: 7,
-                          ),
-                          // DurasiNotf(),
-                          const SizedBox(
-                            height: 7,
-                          ),
-                          KecepatanNotf(
-                            sensorData: widget.sensorData,
-                          ),
-                        ],
-                      ),
+                      width: 10,
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 15,
-                ),
-                KecepatanSensor(
-                  sensorData: widget.sensorData,
-                ),
-                const SizedBox(
-                  height: 17,
-                ),
-                // const RincianSensor(),
-                const SizedBox(
-                  height: 25,
-                ),
-              ],
-            ),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              MapsLocation(
+                sensorData: widget.sensorData,
+                locationUpdatedNotif: widget.locationUpdatedNotif,
+              ),
+              const SizedBox(
+                height: 17,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  KeadaanEmosi(
+                    conditionData: widget.conditionData,
+                  ),
+                  const SizedBox(
+                    width: 15,
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        KantukNotf(
+                          conditionData: widget.conditionData,
+                        ),
+                        const SizedBox(
+                          height: 7,
+                        ),
+                        // DurasiNotf(),
+                        const SizedBox(
+                          height: 7,
+                        ),
+                        KecepatanNotf(
+                          sensorData: widget.sensorData,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              KecepatanSensor(
+                sensorData: widget.sensorData,
+              ),
+              const SizedBox(
+                height: 17,
+              ),
+              // const RincianSensor(),
+              const SizedBox(
+                height: 25,
+              ),
+            ],
           ),
         ),
       ),

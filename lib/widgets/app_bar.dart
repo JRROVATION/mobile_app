@@ -11,6 +11,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      forceMaterialTransparency: true,
       centerTitle: true,
       title: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:mobile_app/provider.dart';
 import 'package:mobile_app/screens/loading_screen.dart';
 
 // final theme = ThemeData(
@@ -13,6 +14,7 @@ import 'package:mobile_app/screens/loading_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  setupLocator();
   await initializeDateFormatting('id_ID', null);
   runApp(const MyApp());
 }
@@ -23,6 +25,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
+      debugShowCheckedModeBanner: false,
       // theme: ThemeData(
       //   useMaterial3: true,
       // ),

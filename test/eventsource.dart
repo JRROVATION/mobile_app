@@ -1,11 +1,11 @@
-import 'dart:convert';
+import 'dart:convert' as convert;
 
 import 'package:http/http.dart' as http;
 
 void main() async {
-  var url = Uri.https('advise.zonainovasi.site', '/');
-  var access_token = null;
-  var device_id = "c811f5a1-dbc1-4407-a429-699a49a00508";
+  var url = Uri.https('advise.zonainovasi.site', '/api');
+  var accessToken = null;
+  var deviceId = "0df8a0cc-4269-4147-9541-937ed08a62b7";
 
   {
     // Test GET
@@ -20,19 +20,22 @@ void main() async {
       'Accept': 'application/json',
     };
 
-    final payload = json.encode({
-      "username": "diandrary",
-      "password": "theunrarizqy",
+    final payload = convert.json.encode({
+      "username": "advise_device",
+      "password": "advise123",
     });
 
     var response = await http.post(
-      url.replace(path: '/auth/sign-in'),
+      url.replace(path: '/api/auth/sign-in'),
       headers: headers,
       body: payload,
     );
-    print('POST `/auth/sign-in` Response status: ${response.statusCode}');
-    final receive = json.decode(response.body);
-    access_token = receive["access_token"];
+    print('POST `/api/auth/sign-in` Response status: ${response.statusCode}');
+    final receive = convert.json.decode(response.body);
+    var jsonResponse =
+        convert.jsonDecode(response.body) as Map<String, dynamic>;
+    accessToken = jsonResponse["access_token"];
+    print(jsonResponse["user"]['id']);
   }
 
   {
@@ -41,24 +44,36 @@ void main() async {
 
     final req = http.Request(
       'GET',
-      url.replace(path: "/device/$device_id/data/listen"),
+      url.replace(path: "/api/device/$deviceId/data/listen"),
     );
 
-    req.headers.putIfAbsent("Authorization", () => "Bearer ${access_token}");
+    req.headers.putIfAbsent("Authorization", () => "Bearer $accessToken");
 
     final http.StreamedResponse rstream = await client.send(req);
 
     rstream.stream.listen((onData) {
       try {
-        final str = utf8.decode(onData);
+        final str = convert.utf8.decode(onData);
         final received = str.split('\n');
         final datastr = received.firstWhere((st) => st.contains('data'));
 
-        final data = json.decode(datastr.replaceFirst('data:', ''));
+        final data = convert.json.decode(datastr.replaceFirst('data:', ''))
+            as Map<String, dynamic>;
 
-        print(data);
+        // Mengakses elemen dari `data`
+        double latitude = data["latitude"];
+        double longitude = data["longitude"];
+        int speed = data["speed"];
+        String expression = data["expression"];
+        bool drowsiness = data["drowsiness"];
+
+        print("Latitude: $latitude");
+        print("Longitude: $longitude");
+        print("Speed: $speed");
+        print("Expression: $expression");
+        print("Drowsiness: $drowsiness");
       } catch (err) {
-        print(err);
+        print('error: $err');
       }
     });
   }

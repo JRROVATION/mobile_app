@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'main_screen.dart';
+import 'package:mobile_app/screens/auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LoadingScreen extends StatefulWidget {
@@ -22,7 +22,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
       if (mounted) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const MainScreen()),
+          MaterialPageRoute(builder: (context) => const Auth()),
         );
       }
     });

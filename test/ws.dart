@@ -15,7 +15,7 @@ void main(List<String> aargs) async {
 
   // final addr = Uri.parse('ws://sites.saveforest.cloud:7080');
   // final addr = Uri.parse('ws://localhost:3000');
-  final addr = Uri.parse('ws://theunra.site:3001');
+  final addr = Uri.parse('https://advise.zonainovasi.site/api');
 
   print("connecting");
   // Create a WebSocket client.
@@ -47,7 +47,7 @@ void main(List<String> aargs) async {
   if (isDevice) {
     int speed = 0;
     double i = 0.00;
-    final timer = Timer.periodic(Duration(seconds: 2), (timer) {
+    final timer = Timer.periodic(const Duration(seconds: 2), (timer) {
       // Send a message to the server.
       final datatest = {
         "id": "vehicle-data",

@@ -176,6 +176,30 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  functional_listener:
+    dependency: transitive
+    description:
+      name: functional_listener
+      sha256: "026d1bd4f66367f11d9ec9f1f1ddb42b89e4484b356972c76d983266cf82f33f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.1"
+  get_it:
+    dependency: "direct main"
+    description:
+      name: get_it
+      sha256: d85128a5dae4ea777324730dc65edd9c9f43155c109d5cc0a69cab74139fbac1
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.7.0"
+  get_it_mixin:
+    dependency: "direct main"
+    description:
+      name: get_it_mixin
+      sha256: "0ab5c9f3cdaab813ec396de5d43ee3833c418424b3a99bec0071fcbf693c0bad"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.2.2"
   google_fonts:
     dependency: "direct main"
     description:
@@ -193,7 +217,7 @@ packages:
     source: hosted
     version: "3.1.0"
   http:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: http
       sha256: b9c29a161230ee03d3ccf545097fccd9b87a5264228c5d348202e0f0c28f9010

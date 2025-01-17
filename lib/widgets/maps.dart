@@ -1,10 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
+import 'package:get_it_mixin/get_it_mixin.dart';
 import 'package:mobile_app/model/sensor.dart';
+import 'package:mobile_app/provider.dart';
+import 'package:mobile_app/view_models/advise_view_model.dart';
 
-class MapsLocation extends StatefulWidget {
-  const MapsLocation({
+class MapsLocation extends StatefulWidget with GetItStatefulWidgetMixin {
+  MapsLocation({
     super.key,
     required this.sensorData,
     required this.locationUpdatedNotif,
@@ -19,9 +22,11 @@ class MapsLocation extends StatefulWidget {
   }
 }
 
-class _MapsLocationState extends State<MapsLocation> {
+class _MapsLocationState extends State<MapsLocation> with GetItStateMixin {
   late MapController controller;
   GeoPoint markerPos = GeoPoint(latitude: -7.0, longitude: 110.0);
+
+  final model = locator<AdviseViewModel>();
 
   @override
   void initState() {
@@ -80,6 +85,8 @@ class _MapsLocationState extends State<MapsLocation> {
   @override
   @mustCallSuper
   Widget build(BuildContext context) {
+    watchOnly((AdviseViewModel only) => only.location);
+    if (markerPos != model.location) {}
     return Container(
       height: 362,
       width: double.infinity,

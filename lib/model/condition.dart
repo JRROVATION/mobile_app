@@ -9,6 +9,27 @@ enum Expression {
   surprised,
 }
 
+Expression getExpressionFromString(String expString) {
+  switch (expString.toLowerCase()) {
+    case "angry":
+      return Expression.angry;
+    case "disgusted":
+      return Expression.disgusted;
+    case "fearful":
+      return Expression.fearful;
+    case "happy":
+      return Expression.happy;
+    case "neutral":
+      return Expression.neutral;
+    case "sad":
+      return Expression.sad;
+    case "surprised":
+      return Expression.surprised;
+    default:
+      throw ArgumentError("Unknown expression: $expString");
+  }
+}
+
 getExpressionString(Expression exp) {
   List<String> expDict = [
     "angry",

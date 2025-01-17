@@ -1,12 +1,14 @@
+// ignore_for_file: unused_element
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert' as convert;
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
-import 'package:web_socket_client/web_socket_client.dart';
 import 'package:mobile_app/model/condition.dart';
 import 'package:mobile_app/screens/home.dart';
 import 'package:mobile_app/widgets/app_bar.dart';
 import 'package:mobile_app/model/sensor.dart';
+import 'package:http/http.dart' as http;
 
 class MainScreen extends StatefulWidget {
   const MainScreen({
@@ -30,8 +32,6 @@ class _MainScreenState extends State<MainScreen> {
 
   final SensorData sensorData = SensorData();
   final ConditionData conditionData = ConditionData();
-
-  late final WebSocket serverSocket;
 
   ValueNotifier locationUpdatedNotif = ValueNotifier(false);
 
@@ -65,14 +65,15 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void initServer() async {
-    final addr = Uri.parse('https://advise.zonainovasi.site/api');
-
     if (kDebugMode) {
       print("connecting to server");
     }
+    var url = Uri.https('advise.zonainovasi.site', '/api');
 
-    serverSocket = WebSocket(addr);
-    await serverSocket.connection.firstWhere((state) => state is Connected);
+    var response = await http.get(url);
+    print('GET `/` Response status: ${response.statusCode}');
+    // serverSocket = WebSocket(addr);
+    // await serverSocket.connection.firstWhere((state) => state is Connected);
 
     if (kDebugMode) {
       print("Server connected");
@@ -84,34 +85,35 @@ class _MainScreenState extends State<MainScreen> {
 
     _sendClientInfoToServer();
 
-    serverSocket.messages.listen((message) {
-      _handleServerMessage(message);
-    });
+    // serverSocket.messages.listen((message) {
+    //   _handleServerMessage(message);
+    // });
 
-    serverSocket.connection.listen((state) {
-      _handleServerConnectionState(state);
-    });
+    // serverSocket.connection.listen((state) {
+    _handleServerConnectionState(response.statusCode);
+    // });
   }
 
   void _sendClientInfoToServer() {
+    // ignore: unused_local_variable
     final clientInfo = {
       "id": "client-info",
       "data": {
-        "clientId": "9bb844ce-c4a2-4c3a-abe3-4064f1e5e896",
+        "clientId": "0df8a0cc-4269-4147-9541-937ed08a62b7",
         "isDevice": false
       }
     };
 
-    serverSocket.send(convert.jsonEncode(clientInfo));
+    // serverSocket.send(convert.jsonEncode(clientInfo));
   }
 
-  void _handleServerConnectionState(state) {
+  void _handleServerConnectionState(int state) {
     if (kDebugMode) {
       print("Server conn state changed : $state");
     }
-    if (state is Disconnected || state is Reconnecting) {
+    if (state >= 400) {
       isServerConnected = false;
-    } else if (state is Connected || state is Reconnected) {
+    } else if (state < 400) {
       isServerConnected = true;
       _sendClientInfoToServer();
     }
@@ -131,7 +133,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void _sendToServer(String message) {
-    serverSocket.send(message);
+    // serverSocket.send(message);
   }
 
   void _onReceivedBT(payload) {
@@ -234,49 +236,6 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       appBar: CustomAppBar(currentIndex: _currentIndex),
       body: pages(),
-      // bottomNavigationBar: const SizedBox(
-      //   height: 83,
-      // child: BottomNavigationBar(
-      //   backgroundColor: const Color.fromRGBO(217, 217, 217, 1),
-      //   type: BottomNavigationBarType.fixed,
-      //   currentIndex: _currentIndex,
-      //   onTap: (index) {
-      //     setState(() {
-      //       _currentIndex = index;
-      //     });
-      //   },
-      //   items: const [
-      //     BottomNavigationBarItem(
-      //       label: 'ATHUS',
-      //       icon: Icon(
-      //         Icons.water_drop_outlined,
-      //       ),
-      //     ),
-      //     BottomNavigationBarItem(
-      //       label: 'MMS',
-      //       icon: Icon(Icons.air_outlined),
-      //     ),
-      //     BottomNavigationBarItem(
-      //       label: 'TMA',
-      //       icon: Icon(Icons.water_outlined),
-      //     ),
-      //     BottomNavigationBarItem(
-      //       label: 'Air',
-      //       icon: Icon(Icons.water),
-      //     ),
-      //   ],
-      //   selectedLabelStyle: GoogleFonts.poppins(
-      //     fontWeight: FontWeight.bold,
-      //     fontSize: 10,
-      //   ),
-      //   unselectedLabelStyle: GoogleFonts.poppins(
-      //     // fontWeight: FontWeight.w500,
-      //     fontSize: 10,
-      //   ),
-      //   selectedItemColor: Colors.black,
-      //   unselectedItemColor: Colors.grey.shade700,
-      // ),
-      // ),
     );
   }
 }
