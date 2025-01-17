@@ -141,42 +141,71 @@ class AdviseViewModel extends ChangeNotifier {
   }
 
   Future<void> eventSourceStream() async {
-    final client = http.Client();
+    try {
+      final client = http.Client();
+      final req = http.Request(
+        'GET',
+        _url.replace(path: "/api/device/$deviceId/data/listen"),
+      );
 
-    final req = http.Request(
-      'GET',
-      _url.replace(path: "/api/device/$deviceId/data/listen"),
-    );
+      req.headers["Authorization"] = "Bearer $accessToken";
 
-    req.headers.putIfAbsent("Authorization", () => "Bearer $accessToken");
+      final http.StreamedResponse rstream = await client.send(req).timeout(
+        const Duration(seconds: 15), // Tambahkan timeout
+        onTimeout: () {
+          if (kDebugMode) {
+            print("⚠️ Timeout: Server tidak merespons dalam 15 detik.");
+          }
+          client.close();
+          throw TimeoutException("Server tidak merespons.");
+        },
+      );
 
-    final http.StreamedResponse rstream = await client.send(req);
+      // Gunakan `asBroadcastStream` agar bisa digunakan ulang
+      final stream = rstream.stream.asBroadcastStream();
 
-    rstream.stream.listen((onData) {
-      try {
-        final str = convert.utf8.decode(onData);
-        final received = str.split('\n');
-        final datastr = received.firstWhere((st) => st.contains('data'));
+      stream.listen((onData) {
+        try {
+          final str = convert.utf8.decode(onData);
+          final received = str.split('\n');
+          final datastr = received.firstWhere((st) => st.contains('data'));
 
-        final data = convert.json.decode(datastr.replaceFirst('data:', ''))
-            as Map<String, dynamic>;
+          final data = convert.json.decode(datastr.replaceFirst('data:', ''))
+              as Map<String, dynamic>;
 
-        // Mengakses elemen dari `data`
-        final double _latitude = data["latitude"];
-        final double _longitude = data["longitude"];
-        final int _speed = data["speed"];
-        final String _expression = data["expression"];
-        final bool _drowsiness = data["drowsiness"];
+          final double _latitude = data["latitude"];
+          final double _longitude = data["longitude"];
+          final int _speed = data["speed"];
+          final String _expression = data["expression"];
+          final bool _drowsiness = data["drowsiness"];
 
-        location = GeoPoint(latitude: _latitude, longitude: _longitude);
-        speed = _speed.toDouble();
-        expression = getExpressionFromString(_expression);
-        drowsiness = _drowsiness;
-      } catch (err) {
-        if (kDebugMode) {
-          print('error: $err');
+          if (kDebugMode) {
+            print('✅ Data diterima: lat=$_latitude, lon=$_longitude');
+          }
+
+          location = GeoPoint(latitude: _latitude, longitude: _longitude);
+          speed = _speed.toDouble();
+          expression = getExpressionFromString(_expression);
+          drowsiness = _drowsiness;
+        } catch (err) {
+          if (kDebugMode) {
+            print('⚠️ Parsing error: $err');
+          }
         }
+      }, onError: (error) {
+        if (kDebugMode) {
+          print("❌ Error saat menerima stream data: $error");
+        }
+      }, onDone: () {
+        if (kDebugMode) {
+          print("✅ Stream selesai.");
+        }
+        client.close(); // Pastikan client ditutup setelah stream selesai
+      });
+    } catch (err) {
+      if (kDebugMode) {
+        print("❌ Terjadi error pada stream: $err");
       }
-    });
+    }
   }
 }

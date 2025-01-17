@@ -66,68 +66,41 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: Colors.black54,
                       ),
                     ),
-                    const SizedBox(
-                      width: 10,
-                    ),
+                    const SizedBox(width: 10),
                   ],
                 ),
               ),
-              const SizedBox(
-                height: 30,
-              ),
-              MapsLocation(
-                sensorData: widget.sensorData,
-                locationUpdatedNotif: widget.locationUpdatedNotif,
-              ),
-              const SizedBox(
-                height: 17,
-              ),
+              const SizedBox(height: 30),
+              MapsLocation(),
+              const SizedBox(height: 17),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  KeadaanEmosi(
-                    conditionData: widget.conditionData,
-                  ),
-                  const SizedBox(
-                    width: 15,
-                  ),
+                  KeadaanEmosi(),
+                  const SizedBox(width: 15),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        KantukNotf(
-                          conditionData: widget.conditionData,
-                        ),
-                        const SizedBox(
-                          height: 7,
-                        ),
+                        KantukNotf(),
+                        const SizedBox(height: 7),
                         // DurasiNotf(),
-                        const SizedBox(
-                          height: 7,
-                        ),
-                        KecepatanNotf(
-                          sensorData: widget.sensorData,
-                        ),
+                        const SizedBox(height: 7),
+                        KecepatanNotf(),
                       ],
                     ),
                   ),
                 ],
               ),
-              const SizedBox(
-                height: 15,
-              ),
+              const SizedBox(height: 15),
               KecepatanSensor(
                 sensorData: widget.sensorData,
               ),
-              const SizedBox(
-                height: 17,
-              ),
+              const SizedBox(height: 17),
               // const RincianSensor(),
-              const SizedBox(
-                height: 25,
-              ),
+              const SizedBox(height: 25),
             ],
           ),
         ),

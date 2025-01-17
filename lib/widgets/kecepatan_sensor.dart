@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get_it_mixin/get_it_mixin.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_app/model/sensor.dart';
+import 'package:mobile_app/provider.dart';
+import 'package:mobile_app/view_models/advise_view_model.dart';
 
-class KecepatanSensor extends StatefulWidget {
-  const KecepatanSensor({
+class KecepatanSensor extends StatefulWidget with GetItStatefulWidgetMixin {
+  KecepatanSensor({
     super.key,
     required this.sensorData,
   });
@@ -16,7 +19,10 @@ class KecepatanSensor extends StatefulWidget {
   }
 }
 
-class _KecepatanSensorState extends State<KecepatanSensor> {
+class _KecepatanSensorState extends State<KecepatanSensor>
+    with GetItStateMixin {
+  final model = locator<AdviseViewModel>();
+
   void _openLiveMapOverlay() {
     showModalBottomSheet(
       context: context,
@@ -70,7 +76,7 @@ class _KecepatanSensorState extends State<KecepatanSensor> {
                   Row(
                     children: [
                       Text(
-                        '${widget.sensorData.speed}',
+                        '${model.speed ?? 0}',
                         style: GoogleFonts.ibmPlexSans(
                           fontSize: 40,
                           fontWeight: FontWeight.w500,

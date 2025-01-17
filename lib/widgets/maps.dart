@@ -2,19 +2,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:get_it_mixin/get_it_mixin.dart';
-import 'package:mobile_app/model/sensor.dart';
 import 'package:mobile_app/provider.dart';
 import 'package:mobile_app/view_models/advise_view_model.dart';
 
 class MapsLocation extends StatefulWidget with GetItStatefulWidgetMixin {
   MapsLocation({
     super.key,
-    required this.sensorData,
-    required this.locationUpdatedNotif,
   });
-
-  final SensorData sensorData;
-  final ValueNotifier locationUpdatedNotif;
 
   @override
   State<StatefulWidget> createState() {
@@ -37,7 +31,6 @@ class _MapsLocationState extends State<MapsLocation> with GetItStateMixin {
   @override
   void dispose() {
     super.dispose();
-    widget.locationUpdatedNotif.removeListener(updateLocation);
   }
 
   void initMap() async {
@@ -53,16 +46,10 @@ class _MapsLocationState extends State<MapsLocation> with GetItStateMixin {
     //     // print(latitude);
     //   }
     // });
-
-    widget.locationUpdatedNotif.addListener(updateLocation);
   }
 
-  void updateLocation() async {
+  void updateLocation(GeoPoint newLocation) async {
     if (mounted) {
-      final newLocation = GeoPoint(
-        latitude: widget.sensorData.location.latitude,
-        longitude: widget.sensorData.location.longitude,
-      );
       await controller.goToLocation(newLocation);
       await controller.removeMarker(markerPos);
       await controller.addMarker(newLocation,
@@ -85,7 +72,12 @@ class _MapsLocationState extends State<MapsLocation> with GetItStateMixin {
   @override
   @mustCallSuper
   Widget build(BuildContext context) {
-    watchOnly((AdviseViewModel only) => only.location);
+    GeoPoint? newLocation =
+        watchOnly((AdviseViewModel model) => model.location);
+
+    if (newLocation != null && newLocation != markerPos) {
+      updateLocation(newLocation);
+    }
     if (markerPos != model.location) {}
     return Container(
       height: 362,

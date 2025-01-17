@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get_it_mixin/get_it_mixin.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_app/model/condition.dart';
+import 'package:mobile_app/provider.dart';
+import 'package:mobile_app/view_models/advise_view_model.dart';
 
-class KeadaanEmosi extends StatefulWidget {
-  const KeadaanEmosi({
+class KeadaanEmosi extends StatefulWidget with GetItStatefulWidgetMixin {
+  KeadaanEmosi({
     super.key,
-    required this.conditionData,
   });
-
-  final ConditionData conditionData;
 
   @override
   State<StatefulWidget> createState() {
@@ -16,7 +16,9 @@ class KeadaanEmosi extends StatefulWidget {
   }
 }
 
-class _KeadaanEmosiState extends State<KeadaanEmosi> {
+class _KeadaanEmosiState extends State<KeadaanEmosi> with GetItStateMixin {
+  final model = locator<AdviseViewModel>();
+
   void _openMonitorGraphOverlay() {
     showModalBottomSheet(
       context: context,
@@ -27,7 +29,7 @@ class _KeadaanEmosiState extends State<KeadaanEmosi> {
         ),
       ),
       builder: (ctx) {
-        return Container(
+        return SizedBox(
           width: double.infinity,
           child: Column(
             children: [
@@ -48,12 +50,13 @@ class _KeadaanEmosiState extends State<KeadaanEmosi> {
 
   emotionImage() {
     return Image.asset(
-      "assets/images/emot_${getExpressionString(widget.conditionData.expression)}.png",
+      "assets/images/emot_${getExpressionString(model.expression ?? Expression.neutral)}.png",
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    watchOnly((AdviseViewModel only) => only.expression);
     return Container(
       // color: const Color.fromRGBO(232, 232, 232, 1),
       // width: 50,
@@ -63,7 +66,7 @@ class _KeadaanEmosiState extends State<KeadaanEmosi> {
         borderRadius: BorderRadius.circular(20),
         color: const Color.fromRGBO(232, 232, 232, 1),
       ),
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: IconButton(
         onPressed: _openMonitorGraphOverlay,
         icon: Column(
@@ -98,7 +101,8 @@ class _KeadaanEmosiState extends State<KeadaanEmosi> {
                   child: emotionImage(),
                 ),
                 Text(
-                  getExpressionStateStringID(widget.conditionData.expression),
+                  getExpressionStateStringID(
+                      model.expression ?? Expression.neutral),
                   style: GoogleFonts.poppins(
                     fontSize: 15,
                     fontWeight: FontWeight.w500,

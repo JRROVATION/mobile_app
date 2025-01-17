@@ -1,23 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:get_it_mixin/get_it_mixin.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mobile_app/model/condition.dart';
+import 'package:mobile_app/provider.dart';
+import 'package:mobile_app/view_models/advise_view_model.dart';
 
-class KantukNotf extends StatefulWidget {
-  const KantukNotf({
+class KantukNotf extends StatefulWidget with GetItStatefulWidgetMixin {
+  KantukNotf({
     super.key,
-    required this.conditionData,
   });
 
-  final ConditionData conditionData;
   @override
   State<KantukNotf> createState() {
     return _KantukNotfState();
   }
 }
 
-class _KantukNotfState extends State<KantukNotf> {
+class _KantukNotfState extends State<KantukNotf> with GetItStateMixin {
+  final model = locator<AdviseViewModel>();
+
   @override
   Widget build(BuildContext context) {
+    watchOnly((AdviseViewModel only) => only.drowsiness);
     return Container(
       // color: const Color.fromRGBO(232, 232, 232, 1),
       // width: 173,
@@ -33,9 +36,7 @@ class _KantukNotfState extends State<KantukNotf> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              widget.conditionData.drowsy
-                  ? 'Kantuk Terdeteksi'
-                  : 'Tidak Kantuk',
+              model.drowsiness ?? false ? 'Kantuk Terdeteksi' : 'Tidak Kantuk',
               style: GoogleFonts.poppins(
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
@@ -43,7 +44,7 @@ class _KantukNotfState extends State<KantukNotf> {
               ),
             ),
             Image.asset(
-              widget.conditionData.drowsy
+              model.drowsiness ?? false
                   ? 'assets/images/red.png'
                   : 'assets/images/green.png',
               height: 13,

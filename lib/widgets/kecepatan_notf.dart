@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:get_it_mixin/get_it_mixin.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mobile_app/model/sensor.dart';
+import 'package:mobile_app/provider.dart';
+import 'package:mobile_app/view_models/advise_view_model.dart';
 
-class KecepatanNotf extends StatefulWidget {
-  const KecepatanNotf({
+class KecepatanNotf extends StatefulWidget with GetItStatefulWidgetMixin {
+  KecepatanNotf({
     super.key,
-    required this.sensorData,
   });
 
-  final SensorData sensorData;
   @override
   State<KecepatanNotf> createState() => _KecepatanNotfState();
 }
 
-class _KecepatanNotfState extends State<KecepatanNotf> {
+class _KecepatanNotfState extends State<KecepatanNotf> with GetItStateMixin {
+  final model = locator<AdviseViewModel>();
+
   // void _openLiveMapOverlay() {
   //   showModalBottomSheet(
   //     context: context,
@@ -33,7 +35,7 @@ class _KecepatanNotfState extends State<KecepatanNotf> {
 
   statusKecepatanString() {
     String speedString = "";
-    double speed = widget.sensorData.speed;
+    double speed = model.speed ?? 0;
     if (speed > 70) {
       speedString = "Tinggi";
     } else if (speed > 50) {
@@ -46,6 +48,7 @@ class _KecepatanNotfState extends State<KecepatanNotf> {
 
   @override
   Widget build(BuildContext context) {
+    watchOnly((AdviseViewModel only) => only.speed);
     return Container(
       // color: const Color.fromRGBO(232, 232, 232, 1),
       // width: 173,
@@ -69,9 +72,9 @@ class _KecepatanNotfState extends State<KecepatanNotf> {
               ),
             ),
             Image.asset(
-              widget.sensorData.speed > 70
+              (model.speed ?? 0) > 70
                   ? 'assets/images/red.png'
-                  : widget.sensorData.speed > 50
+                  : (model.speed ?? 0) > 50
                       ? 'assets/images/yellow.png'
                       : 'assets/images/green.png',
               height: 13,
