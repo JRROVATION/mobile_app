@@ -1,7 +1,7 @@
+// ignore_for_file: unused_local_variable
+
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
-import 'dart:math';
 
 import 'package:web_socket_client/web_socket_client.dart';
 import 'package:args/args.dart';

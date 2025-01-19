@@ -41,7 +41,7 @@ void main() async {
       body: payload,
     );
     print('POST `/api/auth/sign-in` Response status: ${response.statusCode}');
-    final receive = convert.json.decode(response.body);
+    convert.json.decode(response.body);
     var jsonResponse =
         convert.jsonDecode(response.body) as Map<String, dynamic>;
     accessToken = jsonResponse["access_token"];

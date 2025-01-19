@@ -105,22 +105,22 @@ class _MapsLocationState extends State<MapsLocation> with GetItStateMixin {
                 ),
               ));
         },
-        osmOption: OSMOption(
-          zoomOption: const ZoomOption(
+        osmOption: const OSMOption(
+          zoomOption: ZoomOption(
             initZoom: 14,
             maxZoomLevel: 19,
             minZoomLevel: 2,
             stepZoom: 1.0,
           ),
-          markerOption: MarkerOption(
-            defaultMarker: const MarkerIcon(
-              icon: Icon(
-                Icons.person_pin_circle,
-                color: Colors.blue,
-                size: 56,
-              ),
-            ),
-          ),
+          // markerOption: MarkerOption(
+          //   defaultMarker: const MarkerIcon(
+          //     icon: Icon(
+          //       Icons.person_pin_circle,
+          //       color: Colors.blue,
+          //       size: 56,
+          //     ),
+          //   ),
+          // ),
         ),
       ),
     );
