@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mobile_app/provider.dart';
 import 'package:mobile_app/screens/main_screen.dart';
 import 'package:mobile_app/view_models/advise_view_model.dart';
 
@@ -30,7 +31,7 @@ class AuthState extends State<Auth> {
 
   @override
   void initState() {
-    model = AdviseViewModel();
+    model = locator<AdviseViewModel>();
     super.initState();
   }
 

@@ -18,7 +18,7 @@ class MapsLocation extends StatefulWidget with GetItStatefulWidgetMixin {
 
 class _MapsLocationState extends State<MapsLocation> with GetItStateMixin {
   late MapController controller;
-  GeoPoint markerPos = GeoPoint(latitude: -7.0, longitude: 110.0);
+  GeoPoint markerPos = GeoPoint(latitude: -7.753068, longitude: 110.383636);
 
   final model = locator<AdviseViewModel>();
 
@@ -50,6 +50,7 @@ class _MapsLocationState extends State<MapsLocation> with GetItStateMixin {
 
   void updateLocation(GeoPoint newLocation) async {
     if (mounted) {
+      await Future.delayed(const Duration(milliseconds: 500));
       await controller.goToLocation(newLocation);
       await controller.removeMarker(markerPos);
       await controller.addMarker(newLocation,
@@ -60,25 +61,32 @@ class _MapsLocationState extends State<MapsLocation> with GetItStateMixin {
             ),
           ));
 
-      // controller.changeLocationMarker(
-      //     oldLocation: markerPos, newLocation: new_location);
+      controller.changeLocationMarker(
+          oldLocation: markerPos, newLocation: newLocation);
       markerPos = newLocation;
+
       if (kDebugMode) {
-        print("SAFJASFJLAKSFJPKASJFLKLASJKFASFK:LASA : $markerPos");
+        print("✅ Update lokasi: $markerPos");
       }
     }
   }
 
   @override
-  @mustCallSuper
   Widget build(BuildContext context) {
-    GeoPoint? newLocation =
-        watchOnly((AdviseViewModel model) => model.location);
+    final GeoPoint? newLocation =
+        watchOnly((AdviseViewModel only) => only.location);
 
-    if (newLocation != null && newLocation != markerPos) {
-      updateLocation(newLocation);
+    if (newLocation != null) {
+      if (kDebugMode) {
+        print(
+            '⚠️ Akan memanggil updateLocation dengan lat=${newLocation.latitude}, lon=${newLocation.longitude}');
+      }
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        updateLocation(newLocation);
+      });
+    } else {
+      print('lokasi null');
     }
-    if (markerPos != model.location) {}
     return Container(
       height: 362,
       width: double.infinity,

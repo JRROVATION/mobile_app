@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:mobile_app/provider.dart';
 import 'package:mobile_app/screens/loading_screen.dart';
+import 'package:mobile_app/view_models/advise_view_model.dart';
 
 // final theme = ThemeData(
 //   useMaterial3: true,
@@ -15,6 +16,11 @@ import 'package:mobile_app/screens/loading_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setupLocator();
+  locator.allReady().then((_) async {
+    print('Semua instance yang terdaftar: ${locator.toString()}');
+    await locator<AdviseViewModel>().loadAccessToken();
+  });
+
   await initializeDateFormatting('id_ID', null);
   runApp(const MyApp());
 }
@@ -24,7 +30,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       // theme: ThemeData(
       //   useMaterial3: true,

@@ -5,4 +5,5 @@ final GetIt locator = GetIt.instance;
 
 void setupLocator() {
   locator.registerLazySingleton<AdviseViewModel>(() => AdviseViewModel());
+  // locator.registerSingleton<AdviseViewModel>(AdviseViewModel());
 }

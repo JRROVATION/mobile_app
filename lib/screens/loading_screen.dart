@@ -1,28 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:get_it_mixin/get_it_mixin.dart';
+import 'package:mobile_app/provider.dart';
 import 'package:mobile_app/screens/auth.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mobile_app/screens/main_screen.dart';
+import 'package:mobile_app/view_models/advise_view_model.dart';
 
-class LoadingScreen extends StatefulWidget {
-  const LoadingScreen({super.key});
+class LoadingScreen extends StatefulWidget with GetItStatefulWidgetMixin {
+  LoadingScreen({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
   _LoadingScreenState createState() => _LoadingScreenState();
 }
 
-class _LoadingScreenState extends State<LoadingScreen> {
+class _LoadingScreenState extends State<LoadingScreen> with GetItStateMixin {
+  final model = locator<AdviseViewModel>();
   @override
   void initState() {
     super.initState();
     navigateToBPContent();
   }
 
-  void navigateToBPContent() {
-    Future.delayed(const Duration(seconds: 3), () {
+  void navigateToBPContent() async {
+    final loggedIn = await model.handleRestrict();
+    Future.delayed(const Duration(seconds: 2), () {
       if (mounted) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const Auth()),
+          MaterialPageRoute(
+              builder: (context) =>
+                  loggedIn ? const MainScreen() : const Auth()),
         );
       }
     });

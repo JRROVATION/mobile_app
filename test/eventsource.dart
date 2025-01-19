@@ -4,13 +4,23 @@ import 'package:http/http.dart' as http;
 
 void main() async {
   var url = Uri.https('advise.zonainovasi.site', '/api');
-  var accessToken = null;
+  String? accessToken;
   var deviceId = "0df8a0cc-4269-4147-9541-937ed08a62b7";
 
   {
     // Test GET
     var response = await http.get(url);
     print('GET `/` Response status: ${response.statusCode}');
+  }
+  {
+    // Test Restrict
+    url.replace(path: '/api/auth/restrict');
+    var response = await http.get(
+      url.replace(path: '/api/auth/restrict'),
+      headers: {"Authorization": "Bearer $accessToken"},
+    );
+
+    print('Restrict `/` Response status: ${response.statusCode}');
   }
 
   {

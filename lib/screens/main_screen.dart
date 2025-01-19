@@ -33,16 +33,11 @@ class _MainScreenState extends State<MainScreen> {
   final SensorData sensorData = SensorData();
   final ConditionData conditionData = ConditionData();
 
-  ValueNotifier locationUpdatedNotif = ValueNotifier(false);
-
   pages() {
     switch (_currentIndex) {
       case 0:
       default:
         return HomeScreen(
-          sensorData: sensorData,
-          conditionData: conditionData,
-          locationUpdatedNotif: locationUpdatedNotif,
           isServerConnected: isServerConnected,
         );
     }
@@ -83,7 +78,7 @@ class _MainScreenState extends State<MainScreen> {
       isServerConnected = true;
     });
 
-    _sendClientInfoToServer();
+    // _sendClientInfoToServer();
 
     // serverSocket.messages.listen((message) {
     //   _handleServerMessage(message);
@@ -212,8 +207,6 @@ class _MainScreenState extends State<MainScreen> {
               longitude: data["longitude"] + 0.0,
             );
           });
-
-          locationUpdatedNotif.value = !locationUpdatedNotif.value;
         }
 
         //if device is driver, send sensor data to server

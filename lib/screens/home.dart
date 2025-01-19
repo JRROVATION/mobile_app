@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:mobile_app/model/condition.dart';
-import 'package:mobile_app/model/sensor.dart';
 import 'package:mobile_app/widgets/keadaan_emosi.dart';
 import 'package:mobile_app/widgets/kantuk_notf.dart';
 import 'package:mobile_app/widgets/kecepatan_sensor.dart';
@@ -12,15 +10,8 @@ import 'package:mobile_app/widgets/kecepatan_notf.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
     super.key,
-    required this.sensorData,
-    required this.conditionData,
-    required this.locationUpdatedNotif,
     required this.isServerConnected,
   });
-
-  final SensorData sensorData;
-  final ConditionData conditionData;
-  final ValueNotifier locationUpdatedNotif;
 
   final bool isServerConnected;
 
@@ -95,9 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
               const SizedBox(height: 15),
-              KecepatanSensor(
-                sensorData: widget.sensorData,
-              ),
+              KecepatanSensor(),
               const SizedBox(height: 17),
               // const RincianSensor(),
               const SizedBox(height: 25),

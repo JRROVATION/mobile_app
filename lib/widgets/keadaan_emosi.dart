@@ -57,6 +57,7 @@ class _KeadaanEmosiState extends State<KeadaanEmosi> with GetItStateMixin {
   @override
   Widget build(BuildContext context) {
     watchOnly((AdviseViewModel only) => only.expression);
+    print(model.expression);
     return Container(
       // color: const Color.fromRGBO(232, 232, 232, 1),
       // width: 50,

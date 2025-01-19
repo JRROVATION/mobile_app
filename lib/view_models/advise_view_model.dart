@@ -1,5 +1,3 @@
-// ignore_for_file: no_leading_underscores_for_local_identifiers
-
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
@@ -8,53 +6,157 @@ import 'dart:convert' as convert;
 
 import 'package:http/http.dart' as http;
 import 'package:mobile_app/model/condition.dart';
+import 'dart:math' show cos, sqrt, asin;
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AdviseViewModel extends ChangeNotifier {
+  AdviseViewModel() {
+    print('AdviseViewModel instance dibuat: $this');
+  }
   final _url = Uri.https(
     'advise.zonainovasi.site',
     '/api',
   );
 
-  GeoPoint? _location;
-  GeoPoint? get location => _location;
-  set location(GeoPoint? value) {
-    _location = value;
-    notifyListeners();
-  }
-
-  double? _speed;
-  double? get speed => _speed;
-  set speed(double? value) {
-    _speed = value;
-    notifyListeners();
-  }
-
-  Expression? _expression;
-  Expression? get expression => _expression;
-  set expression(Expression? value) {
-    _expression = value;
-    notifyListeners();
-  }
-
-  bool? _drowsiness;
-  bool? get drowsiness => _drowsiness;
-  set drowsiness(bool? value) {
-    _drowsiness = value;
-    notifyListeners();
+  String? _deviceId;
+  String? get deviceId => _deviceId;
+  set deviceId(String? value) {
+    if (deviceId != value) {
+      _deviceId = value;
+      notifyListeners();
+    }
   }
 
   String? _accessToken;
   String? get accessToken => _accessToken;
   set accessToken(String? value) {
-    _accessToken = value;
+    if (_accessToken != value) {
+      _accessToken = value;
+      _saveAccessToken(value);
+      notifyListeners();
+    }
+  }
+
+  Future<void> loadAccessToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    _accessToken = prefs.getString('accessToken');
     notifyListeners();
   }
 
-  String? _deviceId;
-  String? get deviceId => _deviceId;
-  set deviceId(String? value) {
-    _deviceId = value;
-    notifyListeners();
+  Future<void> _saveAccessToken(String? token) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (token != null) {
+      await prefs.setString('accessToken', token);
+    } else {
+      await prefs.remove('accessToken');
+    }
+  }
+
+  bool shouldUpdateLocation(GeoPoint oldLocation, GeoPoint newLocation,
+      {double minDistance = 0.05}) {
+    final double distance = calculateDistance(
+      oldLocation.latitude,
+      oldLocation.longitude,
+      newLocation.latitude,
+      newLocation.longitude,
+    );
+    return distance > minDistance;
+  }
+
+  double calculateDistance(lat1, lon1, lat2, lon2) {
+    var p = 0.017453292519943295;
+    var c = cos;
+    var a = 0.5 -
+        c((lat2 - lat1) * p) / 2 +
+        c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
+    return 12742 * asin(sqrt(a));
+  }
+
+  GeoPoint? _location = GeoPoint(latitude: -7.0, longitude: 110.0);
+  GeoPoint? get location => _location;
+  set location(GeoPoint? value) {
+    if (_location == null ||
+        _location!.latitude != value!.latitude ||
+        _location!.longitude != value.longitude) {
+      // if (kDebugMode) {
+      //   print(
+      //       '📍 Setter location dipanggil: lat=${value?.latitude}, lon=${value?.longitude}');
+      // }
+      _location = value;
+      notifyListeners();
+    }
+  }
+
+  double? _speed;
+  double? get speed => _speed;
+  set speed(double? value) {
+    if (_speed != value) {
+      _speed = value;
+      print(_speed);
+      notifyListeners();
+    }
+  }
+
+  Expression? _expression;
+  Expression? get expression => _expression;
+  set expression(Expression? value) {
+    if (_expression != value) {
+      _expression = value;
+      notifyListeners();
+    }
+  }
+
+  bool? _drowsiness;
+  bool? get drowsiness => _drowsiness;
+  set drowsiness(bool? value) {
+    if (_drowsiness != value) {
+      _drowsiness = value;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> handleRestrict() async {
+    final completer = Completer();
+    if (accessToken == null) {
+      if (kDebugMode) {
+        print("⚠️ Access token is null.");
+      }
+      completer.complete(false);
+    }
+
+    try {
+      final response = await http.get(
+        _url.replace(path: '/api/auth/restrict'),
+        headers: {
+          "Authorization": "Bearer $accessToken",
+          "Accept": "application/json",
+        },
+      );
+
+      if (kDebugMode) {
+        print("Restrict Response: ${response.statusCode}");
+        print("Restrict Body: ${response.body}");
+      }
+
+      // Jika token valid, server harus mengembalikan status 200
+      if (response.statusCode == 200) {
+        completer.complete(true);
+      } else {
+        // Jika token tidak valid, hapus token
+        if (kDebugMode) {
+          print("⚠️ Token invalid atau expired. Logging out...");
+        }
+        await handleLogout();
+        completer.complete(false);
+      }
+    } catch (err) {
+      if (kDebugMode) {
+        print("❌ Error during restrict check: $err");
+      }
+      completer.complete(false);
+    }
+    return await completer.future;
   }
 
   Future<void> handleSignIn({
@@ -140,6 +242,10 @@ class AdviseViewModel extends ChangeNotifier {
     return await completer.future;
   }
 
+  Future<void> handleLogout() async {
+    accessToken = null;
+  }
+
   Future<void> eventSourceStream() async {
     try {
       final client = http.Client();
@@ -173,20 +279,23 @@ class AdviseViewModel extends ChangeNotifier {
           final data = convert.json.decode(datastr.replaceFirst('data:', ''))
               as Map<String, dynamic>;
 
-          final double _latitude = data["latitude"];
-          final double _longitude = data["longitude"];
-          final int _speed = data["speed"];
-          final String _expression = data["expression"];
-          final bool _drowsiness = data["drowsiness"];
+          final double newLatitude = data["latitude"];
+          final double newLongitude = data["longitude"];
+          final int newSpeed = data["speed"];
+          final String newExpression = data["expression"];
+          final bool newDrowsiness = data["drowsiness"];
 
           if (kDebugMode) {
-            print('✅ Data diterima: lat=$_latitude, lon=$_longitude');
+            print('✅ Data diterima: lat=$newLatitude, lon=$newLongitude');
+            print('✅ Data diterima: speed=$newSpeed');
+            print(
+                '✅ Data diterima: exp=$newExpression, drowsiness=$newDrowsiness');
           }
 
-          location = GeoPoint(latitude: _latitude, longitude: _longitude);
-          speed = _speed.toDouble();
-          expression = getExpressionFromString(_expression);
-          drowsiness = _drowsiness;
+          location = GeoPoint(latitude: newLatitude, longitude: newLongitude);
+          speed = newSpeed.toDouble();
+          expression = getExpressionFromString(newExpression);
+          drowsiness = newDrowsiness;
         } catch (err) {
           if (kDebugMode) {
             print('⚠️ Parsing error: $err');
