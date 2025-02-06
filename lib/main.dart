@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:mobile_app/provider.dart';
@@ -17,7 +18,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setupLocator();
   locator.allReady().then((_) async {
-    print('Semua instance yang terdaftar: ${locator.toString()}');
+    if (kDebugMode) {
+      print('Semua instance yang terdaftar: ${locator.toString()}');
+    }
     await locator<AdviseViewModel>().loadAccessToken();
   });
 

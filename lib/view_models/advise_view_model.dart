@@ -12,7 +12,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AdviseViewModel extends ChangeNotifier {
   AdviseViewModel() {
-    print('AdviseViewModel instance dibuat: $this');
+    if (kDebugMode) {
+      print('AdviseViewModel instance dibuat: $this');
+    }
   }
   final _url = Uri.https(
     'advise.zonainovasi.site',
@@ -31,7 +33,7 @@ class AdviseViewModel extends ChangeNotifier {
   String? _accessToken;
   String? get accessToken => _accessToken;
   set accessToken(String? value) {
-    if (_accessToken != value) {
+    if (accessToken != value) {
       _accessToken = value;
       _saveAccessToken(value);
       notifyListeners();
@@ -93,7 +95,6 @@ class AdviseViewModel extends ChangeNotifier {
   set speed(double? value) {
     if (_speed != value) {
       _speed = value;
-      print(_speed);
       notifyListeners();
     }
   }
@@ -117,12 +118,11 @@ class AdviseViewModel extends ChangeNotifier {
   }
 
   Future<bool> handleRestrict() async {
-    final completer = Completer();
     if (accessToken == null) {
       if (kDebugMode) {
         print("⚠️ Access token is null.");
       }
-      completer.complete(false);
+      return false;
     }
 
     try {
@@ -139,24 +139,21 @@ class AdviseViewModel extends ChangeNotifier {
         print("Restrict Body: ${response.body}");
       }
 
-      // Jika token valid, server harus mengembalikan status 200
       if (response.statusCode == 200) {
-        completer.complete(true);
+        return true;
       } else {
-        // Jika token tidak valid, hapus token
         if (kDebugMode) {
           print("⚠️ Token invalid atau expired. Logging out...");
         }
         await handleLogout();
-        completer.complete(false);
+        return false;
       }
     } catch (err) {
       if (kDebugMode) {
         print("❌ Error during restrict check: $err");
       }
-      completer.complete(false);
+      return false;
     }
-    return await completer.future;
   }
 
   Future<void> handleSignIn({
@@ -267,7 +264,6 @@ class AdviseViewModel extends ChangeNotifier {
         },
       );
 
-      // Gunakan `asBroadcastStream` agar bisa digunakan ulang
       final stream = rstream.stream.asBroadcastStream();
 
       stream.listen((onData) {
@@ -309,7 +305,7 @@ class AdviseViewModel extends ChangeNotifier {
         if (kDebugMode) {
           print("✅ Stream selesai.");
         }
-        client.close(); // Pastikan client ditutup setelah stream selesai
+        client.close();
       });
     } catch (err) {
       if (kDebugMode) {

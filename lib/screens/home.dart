@@ -24,9 +24,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    final date = DateFormat("EEEE, d MMMM yyyy", "id_ID")
-        .format(DateTime.now())
-        .toString();
+    final date =
+        DateFormat("EEEE, d MMMM yyyy", "id_ID").format(DateTime.now());
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       body: Padding(
@@ -78,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         KantukNotf(),
                         const SizedBox(height: 7),
                         // DurasiNotf(),
-                        const SizedBox(height: 7),
+                        // const SizedBox(height: 7),
                         KecepatanNotf(),
                       ],
                     ),
@@ -89,7 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
               KecepatanSensor(),
               const SizedBox(height: 17),
               // const RincianSensor(),
-              const SizedBox(height: 25),
+              // const SizedBox(height: 25),
             ],
           ),
         ),

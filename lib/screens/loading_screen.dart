@@ -10,27 +10,26 @@ class LoadingScreen extends StatefulWidget with GetItStatefulWidgetMixin {
   LoadingScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _LoadingScreenState createState() => _LoadingScreenState();
+  State<LoadingScreen> createState() => _LoadingScreenState();
 }
 
 class _LoadingScreenState extends State<LoadingScreen> with GetItStateMixin {
   final model = locator<AdviseViewModel>();
   @override
   void initState() {
-    super.initState();
     navigateToBPContent();
+    super.initState();
   }
 
   void navigateToBPContent() async {
-    final loggedIn = await model.handleRestrict();
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: 3), () async {
+      final loggedIn = await model.handleRestrict();
       if (mounted) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) =>
-                  loggedIn ? const MainScreen() : const Auth()),
+            builder: (context) => loggedIn ? const MainScreen() : const Auth(),
+          ),
         );
       }
     });
@@ -38,6 +37,7 @@ class _LoadingScreenState extends State<LoadingScreen> with GetItStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    watchOnly((AdviseViewModel only) => only.accessToken);
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       body: Center(

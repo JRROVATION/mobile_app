@@ -278,7 +278,9 @@ class AuthState extends State<Auth> {
                                       color: Color.fromRGBO(2, 84, 100, 1),
                                     ),
                                     child: isLoggingIn
-                                        ? const CircularProgressIndicator()
+                                        ? const CircularProgressIndicator(
+                                            color: Colors.white,
+                                          )
                                         : Text(
                                             'Masuk',
                                             style: GoogleFonts.plusJakartaSans(
@@ -602,7 +604,9 @@ class AuthState extends State<Auth> {
                                       color: Color.fromRGBO(2, 84, 100, 1),
                                     ),
                                     child: isLoggingIn
-                                        ? const CircularProgressIndicator()
+                                        ? const CircularProgressIndicator(
+                                            color: Colors.white,
+                                          )
                                         : Text(
                                             'Daftar',
                                             style: GoogleFonts.plusJakartaSans(
