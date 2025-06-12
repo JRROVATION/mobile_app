@@ -203,8 +203,8 @@ class AdviseViewModel extends ChangeNotifier {
     required String password,
     required String email,
     required String name,
-    required Function onSuccess,
-    required Function onFailed,
+    Function? onSuccess,
+    Function? onFailed,
   }) async {
     final completer = Completer();
     var response = await http.post(
@@ -230,10 +230,10 @@ class AdviseViewModel extends ChangeNotifier {
     }
 
     if (response.statusCode < 400) {
-      onSuccess;
+      if (onSuccess != null) onSuccess();
       completer.complete(true);
     } else {
-      onFailed;
+      if (onFailed != null) onFailed();
       completer.complete(false);
     }
     return await completer.future;
